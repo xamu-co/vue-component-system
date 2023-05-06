@@ -1,0 +1,33 @@
+{
+    "prettier.configPath": "./.prettierrc",
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[vue]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[scss]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "files.associations": {
+        "*.svg": "html"
+    },
+    "i18n-ally.localesPaths": [
+        "resources/locale/root"
+    ],
+    "i18n-ally.keystyle": "nested",
+    "i18n-ally.displayLanguage": "en-US",
+    "i18n-ally.enabledFrameworks": [
+        "vue-sfc",
+        "vue"
+    ],
+}

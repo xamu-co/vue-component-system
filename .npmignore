@@ -1,0 +1,8 @@
+# dist/
+.vscode/
+.circleci/
+node_modules/
+.releaserc
+package-lock.json
+*.lock
+*.log

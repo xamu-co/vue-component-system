@@ -1,0 +1,136 @@
+{
+	"name": "@open-xamu-co/vue-component-system",
+	"version": "0.0.1",
+	"description": "Vue component system for the xamu project",
+	"main": "lib/index.js",
+	"exports": {
+		".": {
+			"node": {
+				"module": "./lib/esm/index.js",
+				"require": "./lib/index.js",
+				"import": "./wrapper.mjs"
+			},
+			"default": "./lib/esm/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"module": "./lib/esm/index.js",
+	"types": "lib/esm/index.d.ts",
+	"files": [
+		"CHANGELOG.md",
+		"README.md",
+		"lib"
+	],
+	"scripts": {
+		"i": "yarn --frozen-lockfile",
+		"lint": "prettier src/{*,**/*,**/**/*}.{ts,vue} --check",
+		"build:esm": "tsc",
+		"build:cjs": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
+		"build": "rimraf lib && npm run build:esm && npm run build:cjs",
+		"iprepare": "npm run build"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/xamu-co/vue-component-system.git"
+	},
+	"keywords": [
+		"vue",
+		"component",
+		"system"
+	],
+	"author": "@xamu-co",
+	"publishConfig": {
+		"access": "public"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/xamu-co/vue-component-system/issues"
+	},
+	"homepage": "https://github.com/xamu-co/vue-component-system#readme",
+	"devDependencies": {
+		"@babel/cli": "^7.14.8",
+		"@babel/core": "^7.15.0",
+		"@babel/preset-env": "^7.15.0",
+		"@babel/preset-typescript": "^7.15.0",
+		"@commitlint/cli": "^9.1.1",
+		"@commitlint/config-conventional": "^9.1.1",
+		"@fortawesome/fontawesome-common-types": "^6.4.0",
+		"@semantic-release/changelog": "^5.0.1",
+		"@semantic-release/git": "^9.0.0",
+		"@types/lodash": "^4.14.192",
+		"@types/node": "^18.14.0",
+		"@typescript-eslint/eslint-plugin": "^5.39.0",
+		"@typescript-eslint/parser": "^5.39.0",
+		"autoprefixer": "^9.8.6",
+		"cssnano": "^4.1.10",
+		"cssnano-preset-advanced": "^4.0.7",
+		"eslint": "^8.25.0",
+		"eslint-config-prettier": "^8.1.0",
+		"eslint-plugin-prettier": "^3.3.1",
+		"husky": "^4.2.5",
+		"lint-staged": "^10.2.11",
+		"node-css-mqpacker": "^8.0.1",
+		"postcss": "^8.2.10",
+		"postcss-cli": "^8.3.1",
+		"postcss-custom-properties": "^9.1.1",
+		"postcss-merge-selectors": "vis97c/postcss-merge-selectors",
+		"postcss-precision": "vis97c/postcss-precision",
+		"postcss-sort-media-queries": "^3.8.9",
+		"prettier": "^2.0.5",
+		"rimraf": "^3.0.2",
+		"sass": "1.32.10",
+		"semantic-release": "^17.1.1",
+		"sort-css-media-queries": "vis97c/sort-css-media-queries",
+		"stylelint": "^13.6.1",
+		"stylelint-config-prettier": "^8.0.2",
+		"stylelint-prettier": "^1.1.2",
+		"typescript": "^4.2.3",
+		"vue": "^3.2.47",
+		"vue-tsc": "^1.2.0"
+	},
+	"peerDependencies": {
+		"vue": "^3.2.47",
+		"@open-xamu-co/common-enums": "*",
+		"@open-xamu-co/common-helpers": "*",
+		"@open-xamu-co/common-types": "*"
+	},
+	"engines": {
+		"node": ">=16.19.0",
+		"yarn": ">=1.22.4"
+	},
+	"husky": {
+		"hooks": {
+			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+			"pre-commit": "yarn check --integrity && lint-staged"
+		}
+	},
+	"commitlint": {
+		"extends": [
+			"@commitlint/config-conventional"
+		]
+	},
+	"lint-staged": {
+		"*.css": [
+			"stylelint --fix",
+			"prettier --write"
+		],
+		"*.scss": [
+			"stylelint --syntax=scss --fix",
+			"prettier --write"
+		]
+	},
+	"stylelint": {
+		"extends": [
+			"stylelint-prettier/recommended"
+		],
+		"rules": {
+			"indentation": null
+		}
+	},
+	"browserslist": [
+		"last 2 versions, > 0.5%, ie >= 11"
+	],
+	"dependencies": {
+		"lodash": "^4.17.21"
+	}
+}
