@@ -5,7 +5,9 @@
 </template>
 
 <script setup lang="ts">
-	import HTMLClasses, { HTMLClassesProps } from "../../composables/HTMLClasses";
+	import GlobalModifiersComposable, {
+		GlobalModifierProps,
+	} from "../../composables/modifiers/global";
 
 	/**
 	 * Icon
@@ -15,7 +17,7 @@
 	 * <Icon size="50" />
 	 */
 
-	const props = defineProps(HTMLClassesProps);
+	const props = defineProps(GlobalModifierProps);
 
-	const defaultClasses = HTMLClasses(props);
+	const defaultClasses = GlobalModifiersComposable(props);
 </script>

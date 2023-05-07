@@ -1,18 +1,15 @@
 {
    "compilerOptions": {
       "module": "ESNext",
-      "target": "ES2015",
+      "target": "ES2020",
       "declaration": true,
-      "moduleResolution": "Node",
       "esModuleInterop": true,
       "allowJs": true,
-      "isolatedModules": true,
-      "strict": true,
-      "noImplicitAny": true,
+      "useDefineForClassFields": true,
       "baseUrl": ".",
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true,
-      "outDir": "./lib/esm",
+      "outDir": "./lib",
       "rootDir": "src",
       "lib": [
          "ESNext",
@@ -20,17 +17,33 @@
          "DOM"
       ],
       "typeRoots": [
-         "node_modules/@types"
+         "node_modules/@types",
       ],
       "types": [
          "node"
-      ]
+      ],
+      /* Bundler mode */
+      "moduleResolution": "bundler",
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "emitDeclarationOnly": true,
+      "jsx": "preserve",
+      /* Linting */
+      "strict": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noFallthroughCasesInSwitch": true
    },
    "include": [
-      "./src/**/*"
+      "src/index.ts"
    ],
    "exclude": [
       "node_modules",
       "lib"
+   ],
+   "references": [
+      {
+         "path": "./tsconfig.node.json"
+      }
    ]
 }

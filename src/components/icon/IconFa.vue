@@ -7,7 +7,7 @@
 
 	import { PropType, computed } from "vue";
 
-	import { HTMLClassesProps } from "../../composables/HTMLClasses";
+	import { GlobalModifierProps } from "../../composables/modifiers/global";
 	import Icon from "./Icon.vue";
 
 	/**
@@ -19,7 +19,7 @@
 	 */
 
 	const props = defineProps({
-		...HTMLClassesProps,
+		...GlobalModifierProps,
 		name: {
 			type: String as PropType<IconName>,
 			default: "cubes",
@@ -34,9 +34,7 @@
 		},
 	});
 
-	const nameClass = computed<string>(() => {
-		return `fa-${props.name}`;
-	});
+	const nameClass = computed<string>(() => `fa-${props.name}`);
 	const typeClass = computed<string>(() => {
 		// free version of FA only delivers brand, solid and regular
 		if (props.brand) return "fab";
