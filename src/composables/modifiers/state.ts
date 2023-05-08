@@ -1,8 +1,9 @@
 import { computed, PropType } from "vue";
 
-import { toArray, getModifierClasses } from "@open-xamu-co/common-helpers";
+import { toArray } from "@open-xamu-co/common-helpers";
 
 import type { tComposableProps } from "../../types";
+import UtilsComposable from "../utils";
 
 /**
  * Modifiers props
@@ -51,7 +52,11 @@ export const StateModifiersProps = {
  * @param props compatible vue props
  * @composable
  */
-export function StateModifiersComposable(props: tComposableProps<typeof StateModifiersProps>) {
+export default function StateModifiersComposable(
+	props: tComposableProps<typeof StateModifiersProps>
+) {
+	const { getModifierClasses } = UtilsComposable();
+
 	return computed<string[]>(() => {
 		const values = [
 			...toArray(props.state || []),

@@ -1,5 +1,5 @@
 <template>
-	<Icon :class="[nameClass, typeClass]" />
+	<Icon :class="[nameClass, typeClass]" v-bind="props" />
 </template>
 
 <script setup lang="ts">
@@ -7,7 +7,7 @@
 
 	import { PropType, computed } from "vue";
 
-	import { GlobalModifierProps } from "../../composables/modifiers/global";
+	import { GlobalModifiersProps } from "../../composables/modifiers/global";
 	import Icon from "./Icon.vue";
 
 	/**
@@ -19,7 +19,7 @@
 	 */
 
 	const props = defineProps({
-		...GlobalModifierProps,
+		...GlobalModifiersProps,
 		name: {
 			type: String as PropType<IconName>,
 			default: "cubes",

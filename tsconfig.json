@@ -25,7 +25,6 @@
       /* Bundler mode */
       "moduleResolution": "bundler",
       "resolveJsonModule": true,
-      "isolatedModules": true,
       "emitDeclarationOnly": true,
       "jsx": "preserve",
       /* Linting */

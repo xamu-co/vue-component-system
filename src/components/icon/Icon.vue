@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 	import GlobalModifiersComposable, {
-		GlobalModifierProps,
+		GlobalModifiersProps,
 	} from "../../composables/modifiers/global";
 
 	/**
@@ -17,7 +17,7 @@
 	 * <Icon size="50" />
 	 */
 
-	const props = defineProps(GlobalModifierProps);
+	const props = defineProps(GlobalModifiersProps);
 
 	const defaultClasses = GlobalModifiersComposable(props);
 </script>

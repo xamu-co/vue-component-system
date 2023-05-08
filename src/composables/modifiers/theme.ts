@@ -1,11 +1,17 @@
 import { computed, PropType } from "vue";
 
-import type { tThemeModifier, tThemeTuple, tProp } from "@open-xamu-co/common-types";
-import { getThemeClasses } from "@open-xamu-co/common-helpers";
+import type { tThemeModifier, tThemeTuple } from "@open-xamu-co/common-types";
 
-import type { tComposableProps } from "../../types";
+import type { tComposableProps, tProp } from "../../types";
+import UtilsComposable from "../utils";
 
-export const ThemeModifierProps = {
+/**
+ * Theme Modifiers Props
+ *
+ * @param theme defaultTheme
+ * @props
+ */
+export const ThemeModifiersProps = {
 	theme: {
 		type: [String, Array, Object] as PropType<tThemeTuple | tProp<tThemeModifier>>,
 		default: null,
@@ -27,7 +33,9 @@ export default function ThemeModifiersComposable(themeAsUnion: boolean = false) 
 	 * @param props compatible vue props
 	 * @composable
 	 */
-	return function (props: tComposableProps<typeof ThemeModifierProps>) {
+	return function (props: tComposableProps<typeof ThemeModifiersProps>) {
+		const { getThemeClasses } = UtilsComposable();
+
 		return computed<string[]>(() => {
 			return props.theme ? getThemeClasses(props.theme, themeAsUnion) : [];
 		});
