@@ -32,17 +32,4 @@ const plugin = {
 	},
 };
 
-declare module "@vue/runtime-core" {
-	export interface GlobalComponents {
-		IconFa: (typeof components)["IconFa"];
-		Icon: (typeof components)["Icon"];
-		Action: (typeof components)["Action"];
-		ActionButton: (typeof components)["ActionButton"];
-		ActionButtonLink: (typeof components)["ActionButtonLink"];
-		ActionButtonToggle: (typeof components)["ActionButtonToggle"];
-		ActionLink: (typeof components)["ActionLink"];
-		ActionLinkBox: (typeof components)["ActionLinkBox"];
-	}
-}
-
 export default plugin;

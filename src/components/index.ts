@@ -1,3 +1,5 @@
+import Img from "./Img.vue";
+
 import IconFa from "./icon/IconFa.vue";
 import Icon from "./icon/Icon.vue";
 
@@ -9,6 +11,7 @@ import ActionLink from "./action/ActionLink.vue";
 import ActionLinkBox from "./action/ActionLinkBox.vue";
 
 export default {
+	Img,
 	IconFa,
 	Icon,
 	Action,

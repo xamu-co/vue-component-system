@@ -2,7 +2,7 @@
 	<Action v-bind="props" class="box --button" v-on="actionListeners($emit)">
 		<div class="--tm-light --square-sm box">
 			<IconFa v-if="!imageSrc" v-bind="{ ...iconProps, name: icon, size: 50 }" />
-			<img
+			<Img
 				v-else
 				class="--bgColor-light --width --height"
 				:src="imageSrc"
@@ -23,6 +23,7 @@
 
 	import type { iFormIconProps } from "@open-xamu-co/common-types";
 
+	import Img from "../Img.vue";
 	import IconFa from "../icon/IconFa.vue";
 	import { ActionComposableProps, actionListeners } from "../../composables/action";
 
