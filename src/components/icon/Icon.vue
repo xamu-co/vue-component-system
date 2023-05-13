@@ -5,9 +5,7 @@
 </template>
 
 <script setup lang="ts">
-	import GlobalModifiersComposable, {
-		GlobalModifiersProps,
-	} from "../../composables/modifiers/global";
+	import { GlobalModifiersComposable, GlobalModifiersProps } from "../../composables";
 
 	/**
 	 * Icon

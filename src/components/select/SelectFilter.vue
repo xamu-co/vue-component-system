@@ -2,45 +2,56 @@
 	<div>
 		<datalist :id="name">
 			<!-- Select is used as fallback for older browsers -->
-			<LazyInputSelect
+			<Select
 				v-model="model"
-				v-bind="{ omits, options: selectOptions, class: '--maxWidth-180:md' }"
-				v-on="getInputListeners(emit)"
+				v-bind="{ omits, options: selectOptions }"
+				:class="classes"
+				v-on="inputListeners($emit)"
 			/>
 		</datalist>
-		<div v-if="supportsDatalist" class="flx --flxRow --flx-start-center --gap-5">
-			<LazyInputText
+		<div v-if="supportsDatalist" class="flx --flxRow --flstart-center --gap-5">
+			<InputText
 				v-model="model"
-				v-bind="
-					getProps({
-						classes: defaultInputClasses,
-						type: 'text',
-						placeholder,
-						list: name,
-						invalid: isInvalid,
-						disabled: isSelected || disabled,
-					})
-				"
-				v-on="getInputListeners(emit)"
+				v-bind="{
+					type: 'text',
+					placeholder,
+					list: name,
+					invalid: isInvalid,
+					disabled: isSelected || disabled,
+				}"
+				:class="inputClasses"
+				v-on="inputListeners($emit)"
 			/>
-			<LazyActionLink
+			<ActionLink
 				v-if="isSelected"
-				:aria-label="t('restablish_field')"
-				:title="t('restablish_field')"
+				:aria-label="getLocale('input_restablish_field')"
+				:title="getLocale('input_restablish_field')"
 				@click.prevent="resetModel"
 			>
-				<LazyIcon name="xmark" size="20" />
-			</LazyActionLink>
+				<IconFa name="xmark" size="20" />
+			</ActionLink>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import type { PropType } from "vue";
-	import type { iFormIconProps, iSelectOption, tFontAwesome } from "@xamu-co/shared-types";
-	import { toSelectOption } from "@xamu-co/shared-helpers";
+	import { computed, ref } from "vue";
 
-	import { InputComposable } from "~~/composables/useComponent/input";
+	import type { iSelectOption } from "@open-xamu-co/common-types";
+	import { toSelectOption } from "@open-xamu-co/common-helpers";
+
+	import Select from "./Select.vue";
+	import InputText from "../input/InputText.vue";
+	import ActionLink from "../action/ActionLink.vue";
+	import IconFa from "../icon/IconFa.vue";
+	import {
+		InputModifiersComposable,
+		InputModifiersProps,
+		SelectProps,
+		TextInputProps,
+		inputListeners,
+		UtilsComposable,
+	} from "../../composables";
 
 	/**
 	 * Select element with filtering
@@ -49,46 +60,20 @@
 	 */
 
 	const props = defineProps({
-		...InputComposable,
+		...InputModifiersProps,
+		...SelectProps,
+		...TextInputProps,
 		value: {
 			type: [String, Number],
 			default: "",
-		},
-		modelValue: {
-			type: [String, Number],
-			default: null,
-		},
-		placeholder: {
-			type: String,
-			default: "Buscar...",
-		},
-		/**
-		 * FontAwesome icon
-		 */
-		icon: {
-			type: String as PropType<tFontAwesome>,
-			default: "user-group",
-		},
-		iconProps: {
-			type: Object as PropType<iFormIconProps>,
-			default: null,
-		},
-		options: {
-			type: Array as PropType<(string | number | iSelectOption)[]>,
-			required: true,
-		},
-		omits: {
-			type: Array as PropType<(string | number)[]>,
-			default() {
-				return [];
-			},
 		},
 	});
 
 	const emit = defineEmits(["focus", "blur", "update:modelValue"]);
 
-	const { t } = useI18n();
-	const { defaultInputClasses, getProps, getInputListeners } = useComponentInput(props);
+	const { getLocale, getModifierClasses, isBrowser } = UtilsComposable();
+	const { inputClasses } = InputModifiersComposable()(props);
+	const { inputClasses: selectClasses } = InputModifiersComposable(true)(props);
 
 	/**
 	 * get option from value
@@ -105,6 +90,7 @@
 		emit("update:modelValue", "");
 	}
 
+	const supportsDatalist = ref(false);
 	/**
 	 * Input model
 	 *
@@ -131,25 +117,26 @@
 	const isInvalid = computed<boolean>(() => {
 		return (String(model.value).length && !getOptionFromValue(model.value)) || props.invalid;
 	});
-	const getOptions = computed<iSelectOption[]>(() => {
-		return props.options.map(toSelectOption).filter(({ value }) => {
-			return !props.omits.includes(value);
-		});
-	});
 	/**
 	 * options should be reactive
 	 * uses filtered version
 	 */
 	const selectOptions = computed<Array<number | string>>(() => {
-		return getOptions.value.map((option) => {
+		return props.options.map(toSelectOption).map((option) => {
 			const { alias, value } = toSelectOption(option);
 			return alias ?? value;
 		});
 	});
-	const supportsDatalist = ref(false);
+
+	const classes = computed<string[]>(() => {
+		return [
+			selectClasses.value,
+			getModifierClasses(["180:md"], { modifier: "maxWidth", divider: "-" }),
+		].flat(2);
+	});
 
 	// lifecycle
-	if (process.client) {
+	if (isBrowser()) {
 		supportsDatalist.value = !!HTMLDataListElement;
 	}
 </script>

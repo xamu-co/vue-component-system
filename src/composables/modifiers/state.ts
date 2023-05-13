@@ -3,7 +3,7 @@ import { computed, PropType } from "vue";
 import { toArray } from "@open-xamu-co/common-helpers";
 
 import type { tComposableProps } from "../../types";
-import UtilsComposable from "../utils";
+import { UtilsComposable } from "../utils";
 
 /**
  * Modifiers props
@@ -21,7 +21,7 @@ export const StateModifiersProps = {
 	 */
 	active: {
 		type: Boolean,
-		default: false,
+		default: null,
 	},
 	/**
 	 * Invalid state: Mostly useful on inputs
@@ -32,7 +32,7 @@ export const StateModifiersProps = {
 	 */
 	invalid: {
 		type: Boolean,
-		default: false,
+		default: null,
 	},
 	/**
 	 * Component states
@@ -52,9 +52,7 @@ export const StateModifiersProps = {
  * @param props compatible vue props
  * @composable
  */
-export default function StateModifiersComposable(
-	props: tComposableProps<typeof StateModifiersProps>
-) {
+export function StateModifiersComposable(props: tComposableProps<typeof StateModifiersProps>) {
 	const { getModifierClasses } = UtilsComposable();
 
 	return computed<string[]>(() => {

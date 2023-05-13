@@ -1,110 +1,124 @@
 <template>
-	<div :class="classes">
-		<ul v-if="amount > 1 && thumbnails.length >= 1" class="x-file-thumbs">
-			<li v-for="(thumb, thumb_index) in thumbnails" :key="thumb_index">
-				<!-- TODO: use avatar -->
-				<button
-					class="x-file-thumbs-button"
-					:data-tooltip="t('input_file.delete_files')"
-					data-tooltip-bottom
-					data-tooltip-text
-					data-tooltip-bg="secondary"
+	<div :class="classes" class="box --button flx --flxColumn --flx-start-stretch --gap-10">
+		<ul
+			v-if="amount > 1 && thumbnails.length >= 1"
+			class="flx --flxRow --flx-start-center --gap-10"
+		>
+			<li
+				v-for="(thumb, thumb_index) in thumbnails"
+				:key="thumb_index"
+				class="flx --flxRow --flx-start-center --gap-5"
+			>
+				<Action
+					class="avatar --index --bdr"
+					:tooltip="getLocale('input_delete_files', 1)"
+					tooltip-position="bottom"
 					@click.prevent="removeFile(thumb_index)"
 				>
-					<NuxtImg format="webp" :src="thumb" :alt="t('input_file.thumb')" />
-				</button>
+					<div class="back">
+						<Img :src="thumb" :alt="getLocale('input_thumb')" />
+					</div>
+					<ActionLink theme="light" class="--shadow">
+						<IconFa name="xmark" size="20" />
+					</ActionLink>
+				</Action>
 			</li>
 			<li>
-				{{ t("input_file.one_of_amount", { count: model.length, amount }) }}
+				{{ getLocale("input_one_of_amount", { count: model.length, amount }) }}
 			</li>
 		</ul>
-		<ProtoInput
-			v-bind="
-				getProps({
-					classes: ['--hidden'],
+		<label
+			v-show="model.length < amount && !isLoading"
+			ref="dropAreaRef"
+			:class="[...inputThemeClasses, { '--bgColor-none': !isDragover }]"
+			class="box --bdr-dashed --size-xs flx --flxColumn --flx-center --minHeight-90"
+			:for="id"
+		>
+			<div class="--txtColor-none txt --txtAlignFlx-center">
+				<template v-if="!isDragover">
+					<p>
+						<b>
+							{{ getLocale("input_choose_file", amount) }}
+						</b>
+						{{
+							(isAdvancedUpload &&
+								!isDragover &&
+								getLocale("input_or_drop_files_here", amount)) ||
+							""
+						}}
+					</p>
+					<p class="--txtSize-xs">
+						{{ getLocale("input_max_file_size_mb", { size: maxSize / 1e6 }) }}
+					</p>
+				</template>
+				<p v-else>
+					<b>
+						{{ getLocale("input_drop_files_here", amount) }}
+					</b>
+				</p>
+			</div>
+			<Input
+				v-bind="{
+					id,
 					name: `${name}[]`,
 					accept: 'image/*',
 					multipe: amount > 1,
 					emitOnly: true,
 					type,
-				})
-			"
-			@change="processFile"
-		/>
-		<label
-			v-show="model.length < amount && !isLoading"
-			ref="dropAreaRef"
-			:for="id"
-			class="x-file-drop"
-		>
-			<div
-				:class="[
-					`--txtColor-${!isDragover ? 'secondary' : 'light'}`,
-					'txt',
-					'--gap-5',
-					'--txtAlignFlx-center',
-				]"
-			>
-				<template v-if="isAdvancedUpload && !isDragover">
-					<p>
-						<b>
-							{{ t("input_file.choose_file", amount) }}
-						</b>
-						{{ t("input_file.or_drop_files_here", amount) }}
-					</p>
-					<p class="--txtSize-xs">
-						{{ t("input_file.max_file_size_mb", { size: maxSize / 1e6 }) }}
-					</p>
-				</template>
-				<template v-else-if="!isDragover">
-					<p>
-						<b>
-							{{ t("input_file.choose_file", amount) }}
-						</b>
-					</p>
-					<p class="--txtSize-xs">
-						{{ t("input_file.max_file_size_mb", { size: maxSize / 1e6 }) }}
-					</p>
-				</template>
-				<p v-else>
-					<b>
-						{{ t("input_file.drop_files_here", amount) }}
-					</b>
-				</p>
-			</div>
+				}"
+				hidden
+				@change="processFile"
+			/>
 		</label>
-		<div v-show="model.length === amount && !isLoading" class="x-file-full">
-			<div class="--txtColor-secondary txt --gaping-5 --txtAlignFlx-center">
+		<div
+			v-if="isLoading || (model.length === amount && !isLoading)"
+			:class="inputThemeClasses"
+			class="box --bdr-solid --size-xs --bgColor-none flx --flxRow --flx-center"
+		>
+			<template v-if="isLoading">
+				{{ getLocale("input_loading_files", amount) }}
+			</template>
+			<template v-else>
 				<p>
-					{{ t("input_file.completed") }}
-					<LazyActionButton
-						:aria-label="t('input_file.delete_files', amount)"
-						@click.prevent="clearFiles"
-					>
-						{{ t("input_file.delete_files", amount) }}
-					</LazyActionButton>
+					{{ getLocale("input_completed") }}
 				</p>
-			</div>
-		</div>
-		<div v-show="isLoading" class="x-file-full">
-			{{ t("input_file.loading_files", amount) }}
+				<ActionButton
+					:theme="inputThemeValues[0]"
+					:aria-label="getLocale('input_delete_files', amount)"
+					@click.prevent="clearFiles"
+				>
+					{{ getLocale("input_delete_files", amount) }}
+				</ActionButton>
+			</template>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import type { PropType } from "vue";
+	import { PropType, computed, onBeforeUnmount, onMounted, ref } from "vue";
+	import debounce from "lodash/debounce";
 
 	import {
 		fileMatchesMimeTypes,
-		getBase64FromImageFile,
-		renameFile,
 		standardImageMimeTypes,
-		debounce,
-	} from "@xamu-co/shared-helpers";
+		renameFile,
+		getBase64FromImageFile,
+	} from "@open-xamu-co/common-helpers";
 
-	import { iDropEvent, tProp } from "~~/resources/types";
-	import { InputComposable } from "~~/composables/useComponent/input";
+	import Img from "../Img.vue";
+	import Input from "./Input.vue";
+	import IconFa from "../icon/IconFa.vue";
+	import Action from "../action/Action.vue";
+	import ActionButton from "../action/ActionButton.vue";
+	import ActionLink from "../action/ActionLink.vue";
+	import {
+		InputModifiersComposable,
+		InputModifiersProps,
+		InputProps,
+		UtilsComposable,
+		SwalComposable,
+	} from "../../composables";
+	import { iDropEvent } from "../../types";
 
 	/**
 	 * File Input element
@@ -118,7 +132,8 @@
 	 */
 
 	const props = defineProps({
-		...InputComposable,
+		...InputModifiersProps,
+		...InputProps,
 		type: {
 			type: String as PropType<"file">,
 			default: "file",
@@ -147,9 +162,10 @@
 
 	const emit = defineEmits(["blur", "focus", "update:modelValue"]);
 
-	const { t } = useI18n({ useScope: "local" });
-	const { defaultInputClasses, getProps, getPrefixedClasses } = useComponentInput(props);
-	const { Swal } = useSwal();
+	const { Swal } = SwalComposable();
+	const { getModifierClasses, getLocale, isBrowser } = UtilsComposable();
+	const { inputClasses, inputThemeClasses, inputThemeValues } = InputModifiersComposable()(props);
+
 	const isAdvancedUpload = ref(false);
 	const thumbnails = ref<string[]>([]);
 	const isLoading = ref(false);
@@ -164,19 +180,19 @@
 		set: (value) => emit("update:modelValue", value),
 	});
 
-	const classes = computed<tProp[]>(() => [
-		...defaultInputClasses.value,
-		...getPrefixedClasses(
-			[
-				{ full: model.value.length === props.amount },
-				{ loading: isLoading.value },
-				{ disabled: !isLoading.value && props.disabled },
-				{ dragover: isDragover.value },
-			],
-			"is"
-		),
-		"x-file",
-	]);
+	const classes = computed<string[]>(() => {
+		return [
+			inputClasses.value,
+			getModifierClasses(
+				[
+					{
+						disabled: !isLoading.value && props.disabled,
+					},
+				],
+				{ suffix: "is" }
+			),
+		].flat(2);
+	});
 
 	/**
 	 * setValue File
@@ -224,8 +240,8 @@
 					if (i === files.length - 1) {
 						//last one, launch swal
 						Swal.fire({
-							title: t("input_file.swal.file_limit"),
-							text: t("input_file.swal.file_limit_text", {
+							title: getLocale("dialog.input_file_limit"),
+							text: getLocale("dialog.input_file_limit_text", {
 								count: props.amount,
 								amount: props.amount,
 							}),
@@ -247,15 +263,15 @@
 					} else if (!isImage) {
 						// not image
 						Swal.fire({
-							title: t("input_file.swal.wrong_format_image"),
-							text: t("input_file.swal.wrong_format_image_text"),
+							title: getLocale("dialog.input_wrong_format_image"),
+							text: getLocale("dialog.input_wrong_format_image_text"),
 							icon: "warning",
 						});
 					} else {
 						// file too big
 						Swal.fire({
-							title: t("input_file.swal.too_big"),
-							text: t("input_file.swal.too_big_text"),
+							title: getLocale("dialog.input_too_big"),
+							text: getLocale("dialog.input_too_big_text"),
 							icon: "warning",
 						});
 					}
@@ -275,8 +291,8 @@
 			setValue(archives);
 			isLoading.value = false;
 			return Swal.fire({
-				title: t("input_file.swal.unknown_error"),
-				text: t("input_file.swal.unknown_error_text"),
+				title: getLocale("dialog.input_unknown_error"),
+				text: getLocale("dialog.input_unknown_error_text"),
 				icon: "error",
 				timer: undefined,
 				showConfirmButton: true,
@@ -302,12 +318,12 @@
 	/**
 	 * file was droped
 	 */
-	function isDrop(e: Event | iDropEvent) {
+	function isDrop(e: Event) {
 		isOut(e);
-		storeFiles(
-			(e as iDropEvent).dataTransfer!.files ||
-				(e as iDropEvent).originalEvent.dataTransfer.files
-		);
+		const store = (drop: iDropEvent) => {
+			storeFiles(drop.dataTransfer?.files || drop.originalEvent.dataTransfer.files);
+		};
+		store(e as iDropEvent);
 	}
 	/**
 	 * file was selected from file explorer
@@ -353,8 +369,7 @@
 	// }
 
 	// lifecycle
-
-	if (process.client) {
+	if (isBrowser()) {
 		/**
 		 * set/unset drag & drop listeners
 		 */
@@ -381,144 +396,3 @@
 		});
 	}
 </script>
-
-<i18n lang="json" locale="en" src="~~/resources/locale/en/component/InputFile.json"></i18n>
-<i18n lang="json" locale="es" src="~~/resources/locale/es/component/InputFile.json"></i18n>
-
-<style lang="scss">
-	.x-file {
-		border-radius: 1rem;
-		// font-family: Arial, sans-serif;
-		letter-spacing: 0.2px;
-		padding: 0.6rem;
-		background: color(secondary, 0.1);
-		transition: all 0.3s ease-out;
-		box-sizing: border-box;
-		&.is--disabled {
-			opacity: 0.3;
-			pointer-events: none;
-		}
-		&.is--full,
-		&.is--loading {
-			background: transparent;
-			&:before {
-				opacity: 1;
-			}
-			.file {
-				&-thumbs {
-					display: none;
-				}
-			}
-		}
-		&:before {
-			content: "";
-			pointer-events: none;
-			display: block;
-			position: absolute;
-			opacity: 0;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			border: 2px dashed color(secondary, 0.1);
-			border-radius: 1rem;
-			box-sizing: border-box;
-			transition: all 0.3s ease-out;
-		}
-		&:not(.is--full):not(.is--loading) {
-			&:hover {
-				background: color(secondary, 0.3);
-				.x-file-drop {
-					border-color: color(secondary, 0.3);
-				}
-			}
-			&.is--dragover {
-				// @include linear-gradient($main_back...);
-				background-color: color(secondary);
-				.x-file-drop {
-					border-color: color(light, 0.3);
-				}
-			}
-		}
-		input[type~="file"]:focus + .x-file-drop {
-			border-color: color(secondary);
-		}
-		&-drop,
-		&-full {
-			width: 100%;
-			border-radius: 0.6rem;
-			padding: 1rem;
-			box-sizing: border-box;
-			@include flexbox(row, nowrap, center, center);
-		}
-		&-drop {
-			height: 8rem;
-			border: 2px dashed color(secondary, 0.1);
-			transition: all 0.3s ease-out;
-			&:hover {
-				cursor: pointer;
-			}
-			* {
-				pointer-events: none;
-			}
-		}
-		&-full {
-			background: color(secondary, 0.1);
-		}
-		&-thumbs {
-			width: 100%;
-			height: auto;
-			// padding: 0 0 0.5rem 0.5rem;
-			box-sizing: border-box;
-			@include flexbox(row, wrap, flex-start, center);
-			> * {
-				margin-right: 0.5rem;
-				margin-bottom: 0.5rem;
-			}
-			li {
-				color: color(secondary);
-			}
-			&-button {
-				display: block;
-				background: color(light);
-				border-radius: 1rem;
-				overflow: hidden;
-				border: 2px solid color(light);
-				&:hover {
-					cursor: pointer;
-					&:before {
-						opacity: 1;
-					}
-					img {
-						opacity: 0.3;
-					}
-				}
-				&:before {
-					content: "\f00d";
-					display: inline-block;
-					opacity: 0;
-					z-index: 1;
-					position: absolute;
-					top: 50%;
-					left: 50%;
-					font-size: 1rem;
-					font-family: family(awesome);
-					font-weight: 900; // font awesome bold
-					color: color(light);
-					// text-shadow: 1px 1px 3px color(dark);
-					transform: translate(-50%, -50%);
-				}
-				img {
-					z-index: 0;
-					display: block;
-					width: 3rem;
-					height: 3rem;
-					border-radius: 0.4rem;
-					object-fit: cover;
-					object-position: 50% 50%;
-					transition: all 0.3s ease-out;
-				}
-			}
-		}
-	}
-</style>

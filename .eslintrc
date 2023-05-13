@@ -1,0 +1,135 @@
+{
+	"root": true,
+	"parserOptions": {
+		"parser": "@typescript-eslint/parser",
+		"requireConfigFile": false,
+		"sourceType": "module",
+		"allowImportExportEverywhere": false,
+		"ecmaVersion": 2020,
+		"ecmaFeatures": {
+			"globalReturn": false
+		}
+	},
+	"env": {
+		"node": true,
+		"browser": true
+	},
+	"extends": [
+		"plugin:vue/vue3-recommended"
+	],
+	"plugins": [
+		"@typescript-eslint",
+		"prettier",
+		"import"
+	],
+	"rules": {
+		"curly": [
+			"error",
+			"multi-line"
+		],
+		"quotes": [
+			"error",
+			"double",
+			{
+				"allowTemplateLiterals": true,
+				"avoidEscape": true
+			}
+		],
+		"eqeqeq": [
+			"error",
+			"smart"
+		],
+		"no-console": "error",
+		"unicorn/number-literal-case": "off",
+		"no-tabs": "off",
+		"comma-dangle": "off",
+		"semi": "off",
+		"arrow-parens": "off",
+		"space-before-function-paren": "off",
+		"indent": "off",
+		"no-extra-boolean-cast": "off",
+		"no-mixed-spaces-and-tabs": [
+			"warn",
+			"smart-tabs"
+		],
+		"spaced-comment": "off",
+		"no-use-before-define": "off",
+		"no-unused-vars": "off",
+		"no-redeclare": "off",
+		"prettier/prettier": [
+			"error",
+			{
+				"endOfLine": "auto",
+				"usePrettierrc": true
+			}
+		],
+		"vue/no-v-for-template-key-on-child": "off",
+		"vue/singleline-html-element-content-newline": "off",
+		"vue/script-indent": "off",
+		"vue/html-indent": "off",
+		"vue/max-attributes-per-line": [
+			"error",
+			{
+				"singleline": 5
+			}
+		],
+		"vue/html-self-closing": [
+			"error",
+			{
+				"html": {
+					"void": "always",
+					"normal": "never"
+				}
+			}
+		],
+		"vue/no-undef-components": "error",
+		"vue/multi-word-component-names": "off",
+		"vue/component-name-in-template-casing": [
+			"error",
+			"PascalCase",
+		],
+		"@typescript-eslint/no-use-before-define": [
+			"error"
+		],
+		"@typescript-eslint/no-dupe-class-members": [
+			"error"
+		],
+		"@typescript-eslint/no-unused-vars": [
+			"warn",
+			{
+				"varsIgnorePattern": "^_",
+				"argsIgnorePattern": "^_",
+				"destructuredArrayIgnorePattern": "^_"
+			}
+		],
+		"@typescript-eslint/no-redeclare": [
+			"error"
+		],
+		"import/no-unresolved": "error",
+		"import/no-named-as-default": "off"
+	},
+	"settings": {
+		"import/parsers": {
+			"@typescript-eslint/parser": [
+				".ts",
+				".tsx"
+			]
+		},
+		"import/resolver": {
+			"typescript": {
+				// always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+				"alwaysTryTypes": true
+			}
+		}
+	},
+	"overrides": [
+		{
+			"files": [
+				"*.vue"
+			],
+			"rules": {
+				"indent": "off"
+			}
+		}
+	]
+}

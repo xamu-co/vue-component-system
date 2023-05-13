@@ -3,11 +3,14 @@
 		v-bind="props"
 		:class="['link', { '--shadow': props.shadow }]"
 		v-on="actionListeners($emit)"
-	/>
+	>
+		<slot></slot>
+	</Action>
 </template>
 
 <script setup lang="ts">
-	import { ActionComposableProps, actionListeners } from "../../composables/action";
+	import Action from "./Action.vue";
+	import { ActionProps, actionListeners } from "../../composables";
 
 	/**
 	 * Action Link Component
@@ -18,10 +21,10 @@
 	 */
 
 	const props = defineProps({
-		...ActionComposableProps,
+		...ActionProps,
 		shadow: {
 			type: Boolean,
-			default: false,
+			default: null,
 		},
 	});
 </script>

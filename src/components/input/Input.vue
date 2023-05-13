@@ -2,14 +2,25 @@
 	<component
 		:is="type !== 'textarea' ? 'input' : 'textarea'"
 		ref="inputRef"
-		v-bind="getInputAttributes"
-		v-on="getInputListeners"
+		v-bind="{
+			...props,
+			...(props.disabled && { tabIndex: -1 }),
+			...((isNumber || isPhone) && {
+				pattern: '[0-9]*',
+				oninput: 'this.value = this.value.replace(/[^0-9]/g,\'\')',
+			}),
+			...(!isNumber && { min: undefined, max: undefined }),
+		}"
+		:class="globalClasses"
+		v-on="inputListeners($emit)"
 	/>
 </template>
 
 <script setup lang="ts">
-	import { tInputEvents } from "~~/resources/types";
-	import { InputPrototypeProps } from "~~/composables/useComponent/input";
+	import { computed, onMounted, ref, watch } from "vue";
+
+	import { GlobalModifiersComposable, GlobalModifiersProps, InputProps } from "../../composables";
+	import { tInputEvents } from "../../types";
 
 	/**
 	 * Input Prototype
@@ -21,51 +32,15 @@
 	 * Should all be null by default
 	 */
 	const props = defineProps({
-		...InputPrototypeProps,
+		...GlobalModifiersProps,
+		...InputProps,
+		/**
+		 * Vue model value
+		 *
+		 * @internalProp
+		 */
 		modelValue: {
 			type: [String, Number, Boolean, Array],
-			default: null,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		/**
-		 * radio and checkbox inputs only
-		 */
-		checked: {
-			type: Boolean,
-			default: null,
-		},
-		/**
-		 * file input only
-		 */
-		accept: {
-			type: String,
-			default: null,
-		},
-		multiple: {
-			type: Boolean,
-			default: null,
-		},
-
-		/**
-		 * number input only
-		 */
-		min: {
-			type: [Number, String],
-			default: null,
-		},
-		max: {
-			type: [Number, String],
-			default: null,
-		},
-
-		/**
-		 * datalist link
-		 */
-		list: {
-			type: String,
 			default: null,
 		},
 		/**
@@ -79,19 +54,46 @@
 			type: Boolean,
 			default: false,
 		},
+		/**
+		 * Input type
+		 */
+		type: {
+			type: String,
+			default: null,
+		},
+		/**
+		 * Match files type
+		 * file input only
+		 *
+		 * @internalProp
+		 */
+		accept: {
+			type: String,
+			default: null,
+		},
+		/**
+		 * Multiple files
+		 * file input only
+		 *
+		 * @internalProp
+		 */
+		multiple: {
+			type: Boolean,
+			default: null,
+		},
 	});
-
-	const emit = defineEmits(["blur", "focus", "update:modelValue", "input", "change"]);
 
 	const inputRef = ref<HTMLInputElement>();
 	const isNumber = computed<boolean>(() => ["number", "tel"].includes(props.type));
 	const isPhone = computed<boolean>(() => props.type === "tel");
 	const useChange = computed<boolean>(() => ["checkbox", "radio", "file"].includes(props.type));
 
+	const globalClasses = GlobalModifiersComposable(props);
+
 	/**
 	 * Get input listeners
 	 */
-	const getInputListeners = computed<tInputEvents>(() => {
+	function inputListeners(emit: any): tInputEvents {
 		/**
 		 * setValue SelectFilter
 		 */
@@ -113,21 +115,7 @@
 				setValue(e.target.checked ?? e.target.value);
 			},
 		};
-	});
-	/**
-	 * returns required input attributes
-	 */
-	const getInputAttributes = computed<Record<string, any>>(() => ({
-		...props,
-		classes: undefined,
-		class: props.classes,
-		...(props.disabled && { tabIndex: -1 }),
-		...((isNumber.value || isPhone.value) && {
-			pattern: "[0-9]*",
-			oninput: "this.value = this.value.replace(/[^0-9]/g,'')",
-		}),
-		...(!isNumber.value && { min: undefined, max: undefined }),
-	}));
+	}
 
 	/**
 	 * set input value (override)

@@ -1,7 +1,19 @@
 <template>
-	<select ref="selectRef" v-bind="getSelectAttributes" v-on="getSelectListeners">
+	<select
+		ref="selectRef"
+		v-bind="{
+			autocomplete: props.autocomplete,
+			disabled: props.disabled,
+			name: props.name,
+			required: props.required,
+			title: props.name,
+			...(props.disabled && { tabIndex: -1 }),
+		}"
+		:class="{ inputClasses: selectClasses }"
+		v-on="selectListeners($emit)"
+	>
 		<option v-if="!hasDefault" hidden selected disabled>
-			{{ props.modelValue || t("select_placeholder") }}
+			{{ props.modelValue || getLocale("select_placeholder") }}
 		</option>
 		<option v-for="(option, index) in getOptions" :key="index" :value="option.value">
 			{{ option.alias || option.value }}
@@ -10,13 +22,18 @@
 </template>
 
 <script setup lang="ts">
-	import type { PropType } from "vue";
-	import type { iSelectOption } from "@xamu-co/shared-types";
-	import omit from "lodash/omit";
-	import { toSelectOption } from "@xamu-co/shared-helpers";
+	import { computed, onMounted, ref, watch } from "vue";
 
-	import type { tInputEvents } from "~~/resources/types";
-	import { InputPrototypeProps } from "~~/composables/useComponent/input";
+	import type { iSelectOption } from "@open-xamu-co/common-types";
+	import { toSelectOption } from "@open-xamu-co/common-helpers";
+
+	import {
+		InputModifiersComposable,
+		InputModifiersProps,
+		SelectProps,
+		UtilsComposable,
+	} from "../../composables";
+	import { tInputEvents } from "../../types";
 
 	/**
 	 * Select Prototype
@@ -28,14 +45,11 @@
 	 * Should all be null by default
 	 */
 	const props = defineProps({
-		...InputPrototypeProps,
-		modelValue: {
-			type: [String, Number],
-			default: null,
-		},
-		options: {
-			type: Array as PropType<(string | number | iSelectOption)[]>,
-			default: null,
+		...InputModifiersProps,
+		...SelectProps,
+		type: {
+			type: String,
+			default: "select",
 		},
 		/**
 		 * Use only emit
@@ -50,12 +64,15 @@
 		},
 	});
 
-	const emit = defineEmits(["blur", "focus", "update:modelValue", "input"]);
-
-	const { t } = useI18n();
+	const { getLocale } = UtilsComposable();
+	const { inputClasses: selectClasses } = InputModifiersComposable(true)(props);
 
 	const selectRef = ref<HTMLSelectElement>();
-	const getOptions = computed<iSelectOption[]>(() => props.options.map(toSelectOption));
+	const getOptions = computed<iSelectOption[]>(() => {
+		return props.options.map(toSelectOption).filter(({ value }) => {
+			return value === props.modelValue || !props.omits.includes(value);
+		});
+	});
 	/**
 	 * get the first instance of the model, non reactive
 	 */
@@ -69,7 +86,7 @@
 	/**
 	 * Get input listeners
 	 */
-	const getSelectListeners = computed<tInputEvents>(() => {
+	function selectListeners(emit: any): tInputEvents {
 		return {
 			focus: (e) => emit("focus", e),
 			blur: (e) => emit("blur", e),
@@ -78,20 +95,7 @@
 				emit("update:modelValue", e.target.value);
 			},
 		};
-	});
-	/**
-	 * returns required select attributes
-	 */
-	const getSelectAttributes = computed<Record<string, any>>(() => ({
-		...omit(props, ["options", "type"]),
-		/**
-		 * title for better accessibility
-		 */
-		title: props.name,
-		classes: undefined,
-		class: props.classes,
-		...(props.disabled && { tabIndex: -1 }),
-	}));
+	}
 
 	/**
 	 * set input value (override)

@@ -4,6 +4,7 @@
 		v-bind="{
 			...props,
 			...tooltipAttributes,
+			...(props.disabled && { tabIndex: -1 }),
 			...(vueComponentSystem?.routerComponent && !!to ? { to } : { href }),
 			type: currentTag === 'button' && !to && !href ? type || 'button' : undefined,
 			...((!!mailto || !!tel) && {
@@ -31,11 +32,14 @@
 	import { toArray } from "@open-xamu-co/common-helpers";
 
 	import type { iPluginOptions } from "../../types";
-	import { ActionComposableProps, actionListeners } from "../../composables/action";
-	import GlobalModifiersComposable from "../../composables/modifiers/global";
-	import StateModifiersComposable from "../../composables/modifiers/state";
-	import ThemeModifiersComposable from "../../composables/modifiers/theme";
-	import UtilsComposable from "../../composables/utils";
+	import {
+		GlobalModifiersComposable,
+		StateModifiersComposable,
+		ThemeModifiersComposable,
+		ActionProps,
+		actionListeners,
+		UtilsComposable,
+	} from "../../composables";
 
 	/**
 	 * Action Prototype
@@ -43,10 +47,16 @@
 	 * @prototype
 	 */
 	const props = defineProps({
-		...ActionComposableProps,
+		...ActionProps,
+		/**
+		 * Theme as union
+		 * Theme should be union
+		 *
+		 * @internalProp
+		 */
 		themeAsUnion: {
 			type: Boolean,
-			default: false,
+			default: null,
 		},
 	});
 
@@ -65,7 +75,7 @@
 
 	const globalClasses = GlobalModifiersComposable(props);
 	const stateClasses = StateModifiersComposable(props);
-	const themeClasses = ThemeModifiersComposable(props.themeAsUnion)(props);
+	const { themeClasses } = ThemeModifiersComposable(props.themeAsUnion)(props);
 
 	/**
 	 * Base classes for action composable based component

@@ -1,6 +1,7 @@
 import type { Component, DefineComponent } from "vue";
 
-import type components from "../components";
+// import type * as components from "../components";
+import { tPluginLocale } from "./locale";
 
 export interface iPluginOptions<K extends string = string> {
 	/**
@@ -11,7 +12,7 @@ export interface iPluginOptions<K extends string = string> {
 	 * Components prefix
 	 *
 	 * @default x
-	 * @example x-component-name or XComponentName
+	 * @example component-name or XComponentName
 	 */
 	componentsPrefix?: string;
 	/**
@@ -24,20 +25,8 @@ export interface iPluginOptions<K extends string = string> {
 	 * Optional image optimization component
 	 */
 	imageComponent?: Component<any> | DefineComponent<any>;
-}
-
-declare module "@vue/runtime-core" {
-	export interface GlobalComponents {
-		Img: (typeof components)["Img"];
-		// icon
-		IconFa: (typeof components)["IconFa"];
-		Icon: (typeof components)["Icon"];
-		// action
-		Action: (typeof components)["Action"];
-		ActionButton: (typeof components)["ActionButton"];
-		ActionButtonLink: (typeof components)["ActionButtonLink"];
-		ActionButtonToggle: (typeof components)["ActionButtonToggle"];
-		ActionLink: (typeof components)["ActionLink"];
-		ActionLinkBox: (typeof components)["ActionLinkBox"];
-	}
+	/**
+	 * Global locale values
+	 */
+	locale?: tPluginLocale;
 }

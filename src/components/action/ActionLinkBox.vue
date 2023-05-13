@@ -25,7 +25,8 @@
 
 	import Img from "../Img.vue";
 	import IconFa from "../icon/IconFa.vue";
-	import { ActionComposableProps, actionListeners } from "../../composables/action";
+	import Action from "./Action.vue";
+	import { ActionProps, actionListeners } from "../../composables";
 
 	/**
 	 * LinkBox Component
@@ -36,7 +37,7 @@
 	 */
 
 	const props = defineProps({
-		...ActionComposableProps,
+		...ActionProps,
 		/**
 		 * FontAwesome icon
 		 */

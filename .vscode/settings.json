@@ -18,16 +18,8 @@
     "[scss]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "files.associations": {
-        "*.svg": "html"
-    },
-    "i18n-ally.localesPaths": [
-        "resources/locale/root"
-    ],
-    "i18n-ally.keystyle": "nested",
-    "i18n-ally.displayLanguage": "en-US",
-    "i18n-ally.enabledFrameworks": [
-        "vue-sfc",
+    "eslint.validate": [
+        "javascript",
         "vue"
     ],
 }

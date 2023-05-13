@@ -1,16 +1,17 @@
 <template>
 	<div :class="{ '--width': fullWidth }">
-		<ProtoInput
+		<Input
 			v-model="model"
-			v-bind="getProps({ classes, value: modelValue, type })"
-			v-on="getInputListeners(emit)"
+			v-bind="{ value: modelValue, type }"
+			:class="classes"
+			v-on="inputListeners($emit)"
 		/>
 		<!-- Do not hide, since this is used by a pseudo element -->
-		<label :for="id" class="flx --flxRow --flx-start-center --gap-none">
-			<div class="flx --flxColumn --flx-start --flx --gap-none">
+		<label :for="id" class="flx --flxRow --flstart-center --gap-none">
+			<div class="flx --flxColumn --flstart --flx --gap-none">
 				<span v-if="label">{{ label }}</span>
 				<span v-else-if="showPlaceholder">
-					{{ model ? t("yes") : t("no") }}
+					{{ getLocale(model ? "yes" : "no") }}
 				</span>
 				<slot></slot>
 			</div>
@@ -19,10 +20,16 @@
 </template>
 
 <script setup lang="ts">
-	import type { PropType } from "vue";
+	import { PropType, computed } from "vue";
 
-	import { tProp } from "~~/resources/types";
-	import { InputComposable } from "~~/composables/useComponent/input";
+	import Input from "./Input.vue";
+	import {
+		InputModifiersComposable,
+		InputModifiersProps,
+		InputProps,
+		inputListeners,
+		UtilsComposable,
+	} from "../../composables";
 
 	/**
 	 * Toggle Input element
@@ -31,11 +38,15 @@
 	 */
 
 	const props = defineProps({
-		...InputComposable,
+		...InputModifiersProps,
+		...InputProps,
 		type: {
 			type: String as PropType<"checkbox" | "radio" | "switch">,
 			default: "checkbox",
 		},
+		/**
+		 * radio and checkbox inputs only
+		 */
 		checked: {
 			type: Boolean,
 			default: null,
@@ -64,8 +75,8 @@
 
 	const emit = defineEmits(["blur", "focus", "update:modelValue"]);
 
-	const { t } = useI18n();
-	const { defaultInputClasses, getProps, getInputListeners } = useComponentInput(props);
+	const { getLocale, getModifierClasses } = UtilsComposable();
+	const { inputClasses } = InputModifiersComposable()(props);
 
 	/**
 	 * Input model
@@ -75,8 +86,7 @@
 		set: (value) => emit("update:modelValue", value),
 	});
 
-	const classes = computed<tProp[]>(() => [
-		...defaultInputClasses.value,
-		{ "--full": props.fullWidth },
-	]);
+	const classes = computed<string[]>(() => {
+		return [inputClasses.value, getModifierClasses(["full"])].flat(2);
+	});
 </script>

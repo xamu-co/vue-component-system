@@ -1,9 +1,12 @@
 <template>
-	<Action v-bind="props" class="bttn" :theme-as-union="true" v-on="actionListeners($emit)" />
+	<Action v-bind="props" class="bttn" :theme-as-union="true" v-on="actionListeners($emit)">
+		<slot></slot>
+	</Action>
 </template>
 
 <script setup lang="ts">
-	import { ActionComposableProps, actionListeners } from "../../composables/action";
+	import Action from "./Action.vue";
+	import { ActionProps, actionListeners } from "../../composables";
 
 	/**
 	 * Action Button Component
@@ -13,5 +16,5 @@
 	 * <ActionButton></ActionButton>
 	 */
 
-	const props = defineProps(ActionComposableProps);
+	const props = defineProps(ActionProps);
 </script>

@@ -1,16 +1,20 @@
 import { App } from "vue";
 import capitalize from "lodash/capitalize";
+// import "sweetalert2/dist/sweetalert2.min.css";
 
-import components from "./components";
+import { tPropertyMapping } from "@open-xamu-co/common-types";
+
+import * as components from "./components";
 import type { iPluginOptions } from "./types";
 
 type tComponentKey = keyof typeof components;
 
-const plugin = {
+export const vueComponentSystemPlugin = {
 	install<T>(V: App<T>, options?: iPluginOptions<tComponentKey>) {
 		// define options fallbacks
 		const pluginOptions: iPluginOptions<tComponentKey> = {
 			globalComponents: true,
+			componentsPrefix: "x",
 			...options,
 		};
 
@@ -32,4 +36,10 @@ const plugin = {
 	},
 };
 
-export default plugin;
+// TODO: (filter components & add suffix) plugin based
+declare module "@vue/runtime-core" {
+	export interface GlobalComponents extends tPropertyMapping<typeof components, string> {}
+}
+
+export * from "./components";
+export * from "./composables";

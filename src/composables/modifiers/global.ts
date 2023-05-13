@@ -1,7 +1,7 @@
 import { computed, PropType } from "vue";
 
 import type { tComposableProps, tPropsModifier } from "../../types";
-import UtilsComposable from "../utils";
+import { UtilsComposable } from "../utils";
 
 /**
  * Global Modifiers Props
@@ -11,7 +11,7 @@ import UtilsComposable from "../utils";
 export const GlobalModifiersProps = {
 	hidden: {
 		type: [Boolean, String, Array, Object] as PropType<tPropsModifier>,
-		default: false,
+		default: null,
 	},
 	size: {
 		type: [String, Number],
@@ -26,14 +26,12 @@ export const GlobalModifiersProps = {
  * @param props compatible vue props
  * @composable
  */
-export default function GlobalModifiersComposable(
-	props: tComposableProps<typeof GlobalModifiersProps>
-) {
+export function GlobalModifiersComposable(props: tComposableProps<typeof GlobalModifiersProps>) {
 	const { getModifierClasses } = UtilsComposable();
 
 	const sizeClasses = computed<string[]>(() => {
 		const size = String(props.size);
-		return size ? getModifierClasses([size], { modifier: "size", divider: "-" }) : [];
+		return props.size ? getModifierClasses([size], { modifier: "size", divider: "-" }) : [];
 	});
 	const hiddenClasses = computed<string[]>(() => {
 		return props.hidden ? getModifierClasses(props.hidden, { modifier: "hidden" }) : [];

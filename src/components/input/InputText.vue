@@ -1,62 +1,70 @@
 <template>
-	<div class="flx --flxRow --flx-center --flx">
-		<div v-if="icon && !long" v-bind="{ class: defaultInputClasses, disabled }">
-			<ProtoInput
-				v-model="model"
-				v-bind="getProps({ classes: undefined, placeholder, type })"
-				v-on="getInputListeners(emit)"
-			/>
-			<LazyIcon v-bind="{ ...iconProps, name: icon }" />
+	<div class="flx --flxRow --flcenter --flx">
+		<div v-if="icon && !long" v-bind="{ disabled }" :class="inputClasses">
+			<Input v-model="model" v-bind="{ placeholder, type }" v-on="inputListeners($emit)" />
+			<IconFa v-bind="{ ...iconProps, name: icon }" />
 		</div>
-		<ProtoInput
+		<Input
 			v-else
 			v-model="model"
-			v-bind="
-				getProps({
-					classes: defaultInputClasses,
-					placeholder,
-					type: long ? 'textarea' : type,
-				})
-			"
-			v-on="getInputListeners(emit)"
+			v-bind="{ placeholder, type: long ? 'textarea' : type }"
+			:class="inputClasses"
+			v-on="inputListeners($emit)"
 		/>
-		<template v-if="type === 'number' && (Number.isInteger(min) || Number.isInteger(max))">
-			<LazyActionButtonToggle
+		<template
+			v-if="
+				type === 'number' &&
+				(Number.isInteger(Number(min)) || Number.isInteger(Number(max)))
+			"
+		>
+			<ActionButtonToggle
 				:disabled="model >= max"
 				:size="size"
-				:aria-label="t('increase')"
-				:tooltip="t('increase')"
+				:aria-label="getLocale('increase')"
+				:tooltip="getLocale('increase')"
 				tooltip-position="bottom"
 				tooltip-as-text
 				round
 				@click="increase"
 			>
-				<LazyIcon name="plus" />
-				<LazyIcon name="plus" />
-			</LazyActionButtonToggle>
-			<LazyActionButtonToggle
+				<IconFa name="plus" />
+				<IconFa name="plus" />
+			</ActionButtonToggle>
+			<ActionButtonToggle
 				:disabled="model <= min"
 				:size="size"
-				:aria-label="t('decrease')"
-				:tooltip="t('decrease')"
+				:aria-label="getLocale('decrease')"
+				:tooltip="getLocale('decrease')"
 				tooltip-position="bottom"
 				tooltip-as-text
 				round
 				@click="decrease"
 			>
-				<LazyIcon name="minus" />
-				<LazyIcon name="minus" />
-			</LazyActionButtonToggle>
+				<IconFa name="minus" />
+				<IconFa name="minus" />
+			</ActionButtonToggle>
 		</template>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import type { PropType } from "vue";
-	import type { iFormIconProps, tFontAwesome } from "@xamu-co/shared-types";
+	import { PropType, computed } from "vue";
+	import type { IconName } from "@fortawesome/fontawesome-common-types";
 
-	import type { tInputText } from "~~/composables/useComponent/input";
-	import { InputComposable } from "~~/composables/useComponent/input";
+	import type { iFormIconProps } from "@open-xamu-co/common-types";
+
+	import Input from "./Input.vue";
+	import IconFa from "../icon/IconFa.vue";
+	import ActionButtonToggle from "../action/ActionButtonToggle.vue";
+	import {
+		InputModifiersComposable,
+		InputModifiersProps,
+		InputProps,
+		NumberInputProps,
+		TextInputProps,
+		inputListeners,
+		UtilsComposable,
+	} from "../../composables";
 
 	/**
 	 * Text Input element
@@ -65,13 +73,18 @@
 	 *
 	 * @component
 	 * @example
-	 * <LazyInputText :value=""></LazyInputText>
+	 * <InputText :value=""></InputText>
 	 */
 
 	const props = defineProps({
-		...InputComposable,
+		...InputModifiersProps,
+		...InputProps,
+		...TextInputProps,
+		...NumberInputProps,
 		type: {
-			type: String as PropType<tInputText>,
+			type: String as PropType<
+				"text" | "email" | "password" | "search" | "url" | "number" | "tel"
+			>,
 			default: "text",
 		},
 		value: {
@@ -82,27 +95,15 @@
 			type: [String, Number],
 			default: null,
 		},
-		placeholder: {
-			type: String,
-			default: "Tu texto...",
-		},
 		/**
 		 * FontAwesome icon
 		 */
 		icon: {
-			type: String as PropType<tFontAwesome>,
+			type: String as PropType<IconName>,
 			default: "user-group",
 		},
 		iconProps: {
 			type: Object as PropType<iFormIconProps>,
-			default: null,
-		},
-		min: {
-			type: [Number, String],
-			default: null,
-		},
-		max: {
-			type: Number,
 			default: null,
 		},
 		/**
@@ -113,7 +114,8 @@
 			default: false,
 		},
 		/**
-		 * datalist link
+		 * data list link
+		 * @see https://www.w3schools.com/TAGS/att_input_list.asp
 		 */
 		list: {
 			type: String,
@@ -123,8 +125,8 @@
 
 	const emit = defineEmits(["focus", "blur", "update:modelValue"]);
 
-	const { t } = useI18n();
-	const { defaultInputClasses, getProps, getInputListeners } = useComponentInput(props);
+	const { getLocale } = UtilsComposable();
+	const { inputClasses } = InputModifiersComposable()(props);
 
 	/**
 	 * Input model
@@ -142,7 +144,7 @@
 	 */
 	function increase() {
 		if (typeof model.value !== "number") return;
-		if (model.value < props.max) model.value++;
+		if (model.value < Number(props.max)) model.value++;
 	}
 
 	/**
@@ -150,6 +152,6 @@
 	 */
 	function decrease() {
 		if (typeof model.value !== "number") return;
-		if (model.value > props.min) model.value--;
+		if (model.value > Number(props.min)) model.value--;
 	}
 </script>

@@ -3,12 +3,11 @@
 </template>
 
 <script setup lang="ts">
+	import { PropType, computed } from "vue";
 	import type { IconName } from "@fortawesome/fontawesome-common-types";
 
-	import { PropType, computed } from "vue";
-
-	import { GlobalModifiersProps } from "../../composables/modifiers/global";
 	import Icon from "./Icon.vue";
+	import { GlobalModifiersProps } from "../../composables";
 
 	/**
 	 * FontAwesome Icon

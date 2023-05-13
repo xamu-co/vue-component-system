@@ -1,9 +1,9 @@
 import { PropType } from "vue";
 
-import type { tProp, tProps, tPropsModifier } from "../types";
-import { GlobalModifiersProps } from "../composables/modifiers/global";
-import { StateModifiersProps } from "../composables/modifiers/state";
-import { ThemeModifiersProps } from "../composables/modifiers/theme";
+import type { tProp, tProps, tPropsModifier } from "../../types";
+import { GlobalModifiersProps } from "../modifiers/global";
+import { StateModifiersProps } from "../modifiers/state";
+import { ThemeModifiersProps } from "../modifiers/theme";
 
 type tActionType = "button" | "submit" | "reset";
 
@@ -26,7 +26,7 @@ export function actionListeners(emit: any) {
  *
  * @props
  */
-export const ActionComposableProps = {
+export const ActionProps = {
 	...GlobalModifiersProps,
 	...StateModifiersProps,
 	...ThemeModifiersProps,
@@ -91,7 +91,7 @@ export const ActionComposableProps = {
 	 */
 	round: {
 		type: [Boolean, String, Array] as PropType<tPropsModifier>,
-		default: false,
+		default: null,
 	},
 	tooltip: {
 		type: [String, Object] as PropType<tProp>,
@@ -103,7 +103,7 @@ export const ActionComposableProps = {
 	},
 	tooltipAsText: {
 		type: Boolean,
-		default: false,
+		default: null,
 	},
 	toggleState: {
 		type: [String, Array, Object] as PropType<tProps>,
