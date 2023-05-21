@@ -17,6 +17,7 @@ export function inputListeners(emit: any): tInputEvents {
 	return {
 		focus: (e: any) => emit("focus", e),
 		blur: (e: any) => emit("blur", e),
+		"update:modelValue": (e: any) => emit("update:modelValue", e),
 	};
 }
 
@@ -156,7 +157,7 @@ export function InputModifiersComposable(themeAsUnion: boolean = false) {
 		const { themeClasses, themeValues } = ThemeModifiersComposable(themeAsUnion)(props);
 
 		/**
-		 * Base classes for action composable based component
+		 * Base classes for input composable based component
 		 */
 		const inputClasses = computed<string[]>(() => {
 			return [
@@ -168,6 +169,6 @@ export function InputModifiersComposable(themeAsUnion: boolean = false) {
 			].flat(2);
 		});
 
-		return { inputClasses, inputThemeClasses: themeClasses, inputThemeValues: themeValues };
+		return { inputClasses, themeClasses, themeValues };
 	};
 }

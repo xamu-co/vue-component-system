@@ -11,12 +11,12 @@
 			>
 				<Action
 					class="avatar --index --bdr"
-					:tooltip="getLocale('input_delete_files', 1)"
+					:tooltip="getLocale('file_delete_files', 1)"
 					tooltip-position="bottom"
 					@click.prevent="removeFile(thumb_index)"
 				>
 					<div class="back">
-						<Img :src="thumb" :alt="getLocale('input_thumb')" />
+						<Img :src="thumb" :alt="getLocale('file_thumb')" />
 					</div>
 					<ActionLink theme="light" class="--shadow">
 						<IconFa name="xmark" size="20" />
@@ -24,36 +24,42 @@
 				</Action>
 			</li>
 			<li>
-				{{ getLocale("input_one_of_amount", { count: model.length, amount }) }}
+				{{ getLocale("file_one_of_amount", { count: model.length, amount }) }}
 			</li>
 		</ul>
 		<label
 			v-show="model.length < amount && !isLoading"
-			ref="dropAreaRef"
-			:class="[...inputThemeClasses, { '--bgColor-none': !isDragover }]"
+			:class="[...themeClasses, { '--bgColor-none': !isDragover }]"
 			class="box --bdr-dashed --size-xs flx --flxColumn --flx-center --minHeight-90"
 			:for="id"
+			@drag="prevent"
+			@dragstart="prevent"
+			@dragend="isOut"
+			@dragleave="isOut"
+			@drop="isDrop"
+			@dragover="isOver"
+			@dragenter="isOver"
 		>
 			<div class="--txtColor-none txt --txtAlignFlx-center">
 				<template v-if="!isDragover">
 					<p>
 						<b>
-							{{ getLocale("input_choose_file", amount) }}
+							{{ getLocale("file_choose_file", amount) }}
 						</b>
 						{{
 							(isAdvancedUpload &&
 								!isDragover &&
-								getLocale("input_or_drop_files_here", amount)) ||
+								getLocale("file_or_drop_files_here", amount)) ||
 							""
 						}}
 					</p>
 					<p class="--txtSize-xs">
-						{{ getLocale("input_max_file_size_mb", { size: maxSize / 1e6 }) }}
+						{{ getLocale("file_max_file_size_mb", { size: maxSize / 1e6 }) }}
 					</p>
 				</template>
 				<p v-else>
 					<b>
-						{{ getLocale("input_drop_files_here", amount) }}
+						{{ getLocale("file_drop_files_here", amount) }}
 					</b>
 				</p>
 			</div>
@@ -67,27 +73,28 @@
 					type,
 				}"
 				hidden
+				v-on="inputListeners(emit)"
 				@change="processFile"
 			/>
 		</label>
 		<div
 			v-if="isLoading || (model.length === amount && !isLoading)"
-			:class="inputThemeClasses"
+			:class="themeClasses"
 			class="box --bdr-solid --size-xs --bgColor-none flx --flxRow --flx-center"
 		>
 			<template v-if="isLoading">
-				{{ getLocale("input_loading_files", amount) }}
+				{{ getLocale("file_loading_files", amount) }}
 			</template>
 			<template v-else>
 				<p>
-					{{ getLocale("input_completed") }}
+					{{ getLocale("file_completed") }}
 				</p>
 				<ActionButton
-					:theme="inputThemeValues[0]"
-					:aria-label="getLocale('input_delete_files', amount)"
+					:theme="themeValues[0]"
+					:aria-label="getLocale('file_delete_files', amount)"
 					@click.prevent="clearFiles"
 				>
-					{{ getLocale("input_delete_files", amount) }}
+					{{ getLocale("file_delete_files", amount) }}
 				</ActionButton>
 			</template>
 		</div>
@@ -95,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-	import { PropType, computed, onBeforeUnmount, onMounted, ref } from "vue";
+	import { PropType, computed, ref } from "vue";
 	import debounce from "lodash/debounce";
 
 	import {
@@ -117,6 +124,8 @@
 		InputProps,
 		UtilsComposable,
 		SwalComposable,
+		BrowserComposable,
+		inputListeners,
 	} from "../../composables";
 	import { iDropEvent } from "../../types";
 
@@ -159,18 +168,17 @@
 			default: 1e7,
 		},
 	});
-
-	const emit = defineEmits(["blur", "focus", "update:modelValue"]);
+	const emit = defineEmits(["focus", "blur", "update:modelValue"]);
 
 	const { Swal } = SwalComposable();
-	const { getModifierClasses, getLocale, isBrowser } = UtilsComposable();
-	const { inputClasses, inputThemeClasses, inputThemeValues } = InputModifiersComposable()(props);
+	const { getModifierClasses, getLocale } = UtilsComposable();
+	const { isBrowser } = BrowserComposable();
+	const { inputClasses, themeClasses, themeValues } = InputModifiersComposable()(props);
 
 	const isAdvancedUpload = ref(false);
 	const thumbnails = ref<string[]>([]);
 	const isLoading = ref(false);
 	const isDragover = ref(false);
-	const dropAreaRef = ref<HTMLElement>();
 
 	/**
 	 * Input model
@@ -212,15 +220,6 @@
 			"FileReader" in window
 		);
 	}
-
-	/**
-	 * just a prevent
-	 */
-	function prevent(e: Event) {
-		e.preventDefault();
-		e.stopPropagation();
-	}
-
 	/**
 	 * stores the files
 	 */
@@ -240,8 +239,8 @@
 					if (i === files.length - 1) {
 						//last one, launch swal
 						Swal.fire({
-							title: getLocale("dialog.input_file_limit"),
-							text: getLocale("dialog.input_file_limit_text", {
+							title: getLocale("swal.file_limit"),
+							text: getLocale("swal.file_limit_text", {
 								count: props.amount,
 								amount: props.amount,
 							}),
@@ -263,15 +262,15 @@
 					} else if (!isImage) {
 						// not image
 						Swal.fire({
-							title: getLocale("dialog.input_wrong_format_image"),
-							text: getLocale("dialog.input_wrong_format_image_text"),
+							title: getLocale("swal.file_wrong_format_image"),
+							text: getLocale("swal.file_wrong_format_image_text"),
 							icon: "warning",
 						});
 					} else {
 						// file too big
 						Swal.fire({
-							title: getLocale("dialog.input_too_big"),
-							text: getLocale("dialog.input_too_big_text"),
+							title: getLocale("swal.file_too_big"),
+							text: getLocale("swal.file_too_big_text"),
 							icon: "warning",
 						});
 					}
@@ -291,48 +290,13 @@
 			setValue(archives);
 			isLoading.value = false;
 			return Swal.fire({
-				title: getLocale("dialog.input_unknown_error"),
-				text: getLocale("dialog.input_unknown_error_text"),
+				title: getLocale("swal.file_unknown_error"),
+				text: getLocale("swal.file_unknown_error_text"),
 				icon: "error",
 				timer: undefined,
 				showConfirmButton: true,
 			});
 		}
-	}
-	/**
-	 * drag event is over
-	 */
-	function isOver(e: Event) {
-		//cursor is over
-		prevent(e);
-		isDragover.value = true;
-	}
-	/**
-	 * cursor is out of bounds
-	 */
-	function isOut(e: Event) {
-		//cursor is out
-		prevent(e);
-		isDragover.value = false;
-	}
-	/**
-	 * file was droped
-	 */
-	function isDrop(e: Event) {
-		isOut(e);
-		const store = (drop: iDropEvent) => {
-			storeFiles(drop.dataTransfer?.files || drop.originalEvent.dataTransfer.files);
-		};
-		store(e as iDropEvent);
-	}
-	/**
-	 * file was selected from file explorer
-	 * process files on explorer search
-	 */
-	function processFile(e: Event) {
-		//
-		prevent(e);
-		storeFiles((e.target as HTMLInputElement).files!);
 	}
 	/**
 	 * delete saved files
@@ -362,6 +326,59 @@
 		})();
 	}
 	/**
+	 * just a prevent
+	 *
+	 * @listener
+	 */
+	function prevent(e: Event) {
+		if (!isAdvancedUpload.value) return;
+		e.preventDefault();
+		e.stopPropagation();
+	}
+	/**
+	 * drag event is over
+	 *
+	 * @listener
+	 */
+	function isOver(e: Event) {
+		//cursor is over
+		prevent(e);
+		isDragover.value = true;
+	}
+	/**
+	 * cursor is out of bounds
+	 *
+	 * @listener
+	 */
+	function isOut(e: Event) {
+		//cursor is out
+		prevent(e);
+		isDragover.value = false;
+	}
+	/**
+	 * file was droped
+	 *
+	 * @listener
+	 */
+	function isDrop(e: Event) {
+		isOut(e);
+		const store = (drop: iDropEvent) => {
+			storeFiles(drop.dataTransfer?.files || drop.originalEvent.dataTransfer.files);
+		};
+		store(e as iDropEvent);
+	}
+	/**
+	 * file was selected from file explorer
+	 * process files on explorer search
+	 *
+	 * @listener
+	 */
+	function processFile(e: Event) {
+		//
+		prevent(e);
+		storeFiles((e.target as HTMLInputElement).files!);
+	}
+	/**
 	 * check if files are complete
 	 */
 	// function validFiles() {
@@ -369,30 +386,5 @@
 	// }
 
 	// lifecycle
-	if (isBrowser()) {
-		/**
-		 * set/unset drag & drop listeners
-		 */
-		function setListeners(set = true) {
-			if (!isAdvancedUpload.value && set) return;
-			const call = set ? "addEventListener" : "removeEventListener";
-			if (!dropAreaRef.value) return;
-			// Add/remove our drag&drop listeners
-			dropAreaRef.value[call]("drag", prevent, false);
-			dropAreaRef.value[call]("dragstart", prevent, false);
-			dropAreaRef.value[call]("dragend", isOut, false);
-			dropAreaRef.value[call]("dragleave", isOut, false);
-			dropAreaRef.value[call]("drop", isDrop, false);
-			dropAreaRef.value[call]("dragover", isOver, false);
-			dropAreaRef.value[call]("dragenter", isOver, false);
-		}
-		isAdvancedUpload.value = checkAdvancedUploadSupport();
-
-		onMounted(() => {
-			setListeners();
-		});
-		onBeforeUnmount(() => {
-			setListeners(false);
-		});
-	}
+	if (isBrowser) isAdvancedUpload.value = checkAdvancedUploadSupport();
 </script>

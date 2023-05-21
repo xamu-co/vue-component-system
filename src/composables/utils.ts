@@ -87,14 +87,10 @@ export function UtilsComposable() {
 	 * @returns {string}
 	 */
 	function getLocale(
-		key:
-			| Exclude<keyof tPluginLocale, "dialog">
-			| `dialog.${keyof Required<tPluginLocale>["dialog"]}`,
+		key: Exclude<keyof tPluginLocale, "swal"> | `swal.${keyof Required<tPluginLocale>["swal"]}`,
 		data?: number | { [key: string]: any; count?: number }
 	): string {
-		// console.log("before error");
 		let locale = get(vueComponentSystem?.locale || {}, key, "NO LOCALE");
-		// console.log("after error", locale);
 		const pattern = /\{(.+?)\}/g;
 		const plurals = locale.split("|");
 		const count = typeof data === "number" ? data : data?.count ?? -1;
@@ -113,9 +109,5 @@ export function UtilsComposable() {
 		return interpolate(trim(locale), typeof data === "number" ? {} : data, pattern);
 	}
 
-	function isBrowser(): boolean {
-		return typeof window !== "undefined";
-	}
-
-	return { getModifierClasses, getPropData, getLocale, isBrowser };
+	return { getModifierClasses, getPropData, getLocale };
 }

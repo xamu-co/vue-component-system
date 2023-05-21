@@ -10,7 +10,7 @@
 			...(props.disabled && { tabIndex: -1 }),
 		}"
 		:class="{ inputClasses: selectClasses }"
-		v-on="selectListeners($emit)"
+		v-on="selectListeners(emit)"
 	>
 		<option v-if="!hasDefault" hidden selected disabled>
 			{{ props.modelValue || getLocale("select_placeholder") }}
@@ -63,6 +63,7 @@
 			default: false,
 		},
 	});
+	const emit = defineEmits(["focus", "blur", "input", "update:modelValue"]);
 
 	const { getLocale } = UtilsComposable();
 	const { inputClasses: selectClasses } = InputModifiersComposable(true)(props);

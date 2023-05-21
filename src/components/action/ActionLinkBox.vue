@@ -1,5 +1,5 @@
 <template>
-	<Action v-bind="props" class="box --button" v-on="actionListeners($emit)">
+	<Action v-bind="props" class="box --button" v-on="actionListeners(emit)">
 		<div class="--tm-light --square-sm box">
 			<IconFa v-if="!imageSrc" v-bind="{ ...iconProps, name: icon, size: 50 }" />
 			<Img
@@ -61,4 +61,5 @@
 			required: true,
 		},
 	});
+	const emit = defineEmits(["focus", "blur", "click", "submit"]);
 </script>

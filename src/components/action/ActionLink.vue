@@ -2,7 +2,7 @@
 	<Action
 		v-bind="props"
 		:class="['link', { '--shadow': props.shadow }]"
-		v-on="actionListeners($emit)"
+		v-on="actionListeners(emit)"
 	>
 		<slot></slot>
 	</Action>
@@ -27,4 +27,5 @@
 			default: null,
 		},
 	});
+	const emit = defineEmits(["focus", "blur", "click", "submit"]);
 </script>

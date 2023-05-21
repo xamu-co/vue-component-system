@@ -5,13 +5,19 @@ import { tPluginLocale } from "./locale";
 
 export interface iPluginOptions<K extends string = string> {
 	/**
+	 * Use web components instead of vue components
+	 */
+	webComponents?: boolean;
+	/**
 	 * Register all or specific components globally
+	 *
+	 * @default true
 	 */
 	globalComponents?: boolean | K[];
 	/**
 	 * Components prefix
 	 *
-	 * @default x
+	 * @default "x"
 	 * @example component-name or XComponentName
 	 */
 	componentsPrefix?: string;
@@ -29,4 +35,25 @@ export interface iPluginOptions<K extends string = string> {
 	 * Global locale values
 	 */
 	locale?: tPluginLocale;
+	/**
+	 * Laptop media query limit (max-width) in px
+	 *
+	 * @default 1080
+	 * @mediaQuery
+	 */
+	laptopMQPx?: number;
+	/**
+	 * Tablet media query limit (max-width) in px
+	 *
+	 * @default 768
+	 * @mediaQuery
+	 */
+	tabletMQPx?: number;
+	/**
+	 * Mobile media query limit (max-width) in px
+	 *
+	 * @default 576
+	 * @mediaQuery
+	 */
+	mobileMQPx?: number;
 }

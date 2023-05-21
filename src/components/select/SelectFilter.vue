@@ -6,7 +6,7 @@
 				v-model="model"
 				v-bind="{ omits, options: selectOptions }"
 				:class="classes"
-				v-on="inputListeners($emit)"
+				v-on="inputListeners(emit)"
 			/>
 		</datalist>
 		<div v-if="supportsDatalist" class="flx --flxRow --flstart-center --gap-5">
@@ -20,12 +20,12 @@
 					disabled: isSelected || disabled,
 				}"
 				:class="inputClasses"
-				v-on="inputListeners($emit)"
+				v-on="inputListeners(emit)"
 			/>
 			<ActionLink
 				v-if="isSelected"
-				:aria-label="getLocale('input_restablish_field')"
-				:title="getLocale('input_restablish_field')"
+				:aria-label="getLocale('select_restablish_field')"
+				:title="getLocale('select_restablish_field')"
 				@click.prevent="resetModel"
 			>
 				<IconFa name="xmark" size="20" />
@@ -51,6 +51,7 @@
 		TextInputProps,
 		inputListeners,
 		UtilsComposable,
+		BrowserComposable,
 	} from "../../composables";
 
 	/**
@@ -68,10 +69,10 @@
 			default: "",
 		},
 	});
+	const emit = defineEmits(["focus", "blur", "update:modelValue", "input"]);
 
-	const emit = defineEmits(["focus", "blur", "update:modelValue"]);
-
-	const { getLocale, getModifierClasses, isBrowser } = UtilsComposable();
+	const { getLocale, getModifierClasses } = UtilsComposable();
+	const { isBrowser } = BrowserComposable();
 	const { inputClasses } = InputModifiersComposable()(props);
 	const { inputClasses: selectClasses } = InputModifiersComposable(true)(props);
 
@@ -136,7 +137,5 @@
 	});
 
 	// lifecycle
-	if (isBrowser()) {
-		supportsDatalist.value = !!HTMLDataListElement;
-	}
+	if (isBrowser) supportsDatalist.value = !!HTMLDataListElement;
 </script>

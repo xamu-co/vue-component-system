@@ -1,6 +1,5 @@
-import { App } from "vue";
+import { App, Plugin } from "vue";
 import capitalize from "lodash/capitalize";
-// import "sweetalert2/dist/sweetalert2.min.css";
 
 import { tPropertyMapping } from "@open-xamu-co/common-types";
 
@@ -9,12 +8,15 @@ import type { iPluginOptions } from "./types";
 
 type tComponentKey = keyof typeof components;
 
-export const vueComponentSystemPlugin = {
-	install<T>(V: App<T>, options?: iPluginOptions<tComponentKey>) {
-		// define options fallbacks
+export const vueComponentSystemPlugin: Plugin = {
+	install(V: App, options: iPluginOptions<tComponentKey>) {
+		// Define options defaults
 		const pluginOptions: iPluginOptions<tComponentKey> = {
 			globalComponents: true,
 			componentsPrefix: "x",
+			laptopMQPx: 1080,
+			tabletMQPx: 768,
+			mobileMQPx: 576,
 			...options,
 		};
 
@@ -22,7 +24,6 @@ export const vueComponentSystemPlugin = {
 		V.provide("vueComponentSystem", pluginOptions);
 
 		if (!pluginOptions.globalComponents) return;
-
 		// Filter components
 		const componentKeys: tComponentKey[] = Array.isArray(pluginOptions.globalComponents)
 			? pluginOptions.globalComponents
@@ -31,7 +32,21 @@ export const vueComponentSystemPlugin = {
 		// Register components
 		componentKeys.forEach((key) => {
 			const component = components[key];
-			V.component(capitalize(pluginOptions.componentsPrefix) + key, component);
+			const componentName = capitalize(pluginOptions.componentsPrefix) + key;
+
+			/**
+			 * There is an issue with custom elements and emits
+			 *
+			 * @see https://github.com/vuejs/core/issues/7782P
+			 */
+			if (pluginOptions.webComponents) {
+				// register as a web component
+				// const webComponent = defineCustomElement(component);
+				// customElements.define(kebabCase(componentName), webComponent);
+			} else {
+				// register as a Vue component
+				V.component(componentName, component);
+			}
 		});
 	},
 };

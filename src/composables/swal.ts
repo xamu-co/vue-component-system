@@ -18,7 +18,7 @@ export function SwalComposable() {
 		heightAuto: false,
 		reverseButtons: true,
 		buttonsStyling: false,
-		cancelButtonText: getLocale("dialog.cancel"),
+		cancelButtonText: getLocale("swal.cancel"),
 		customClass: {
 			confirmButton: "bttn",
 			cancelButton: "bttnToggle",
@@ -31,7 +31,7 @@ export function SwalComposable() {
 		timer: undefined,
 		showCancelButton: true,
 		showConfirmButton: true,
-		confirmButtonText: getLocale("dialog.continue"),
+		confirmButtonText: getLocale("swal.continue"),
 		customClass: {
 			confirmButton: ["bttn", "--tm-danger-light"],
 			cancelButton: "bttnToggle",

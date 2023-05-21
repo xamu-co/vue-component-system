@@ -1,4 +1,5 @@
 export * from "./utils";
+export * from "./browser";
 export * from "./swal";
 
 export * from "./modifiers/global";

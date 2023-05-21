@@ -4,7 +4,7 @@
 			v-model="model"
 			v-bind="{ value: modelValue, type }"
 			:class="classes"
-			v-on="inputListeners($emit)"
+			v-on="inputListeners(emit)"
 		/>
 		<!-- Do not hide, since this is used by a pseudo element -->
 		<label :for="id" class="flx --flxRow --flstart-center --gap-none">
@@ -72,8 +72,7 @@
 			default: false,
 		},
 	});
-
-	const emit = defineEmits(["blur", "focus", "update:modelValue"]);
+	const emit = defineEmits(["focus", "blur", "update:modelValue"]);
 
 	const { getLocale, getModifierClasses } = UtilsComposable();
 	const { inputClasses } = InputModifiersComposable()(props);

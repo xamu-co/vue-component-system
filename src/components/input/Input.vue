@@ -12,7 +12,7 @@
 			...(!isNumber && { min: undefined, max: undefined }),
 		}"
 		:class="globalClasses"
-		v-on="inputListeners($emit)"
+		v-on="inputListeners(emit)"
 	/>
 </template>
 
@@ -82,6 +82,7 @@
 			default: null,
 		},
 	});
+	const emit = defineEmits(["focus", "blur", "input", "change", "update:modelValue"]);
 
 	const inputRef = ref<HTMLInputElement>();
 	const isNumber = computed<boolean>(() => ["number", "tel"].includes(props.type));

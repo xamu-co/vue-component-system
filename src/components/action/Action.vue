@@ -13,7 +13,7 @@
 			}),
 		}"
 		:class="classes"
-		v-on="actionListeners($emit)"
+		v-on="actionListeners(emit)"
 	>
 		<slot>
 			<template v-if="mailto">
@@ -59,9 +59,9 @@
 			default: null,
 		},
 	});
+	const emit = defineEmits(["focus", "blur", "click", "submit"]);
 
 	const { getModifierClasses, getPropData } = UtilsComposable();
-
 	const vueComponentSystem = inject<iPluginOptions>("vueComponentSystem");
 
 	const currentTag = computed(() => {

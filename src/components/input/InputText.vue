@@ -1,7 +1,7 @@
 <template>
 	<div class="flx --flxRow --flcenter --flx">
 		<div v-if="icon && !long" v-bind="{ disabled }" :class="inputClasses">
-			<Input v-model="model" v-bind="{ placeholder, type }" v-on="inputListeners($emit)" />
+			<Input v-model="model" v-bind="{ placeholder, type }" v-on="inputListeners(emit)" />
 			<IconFa v-bind="{ ...iconProps, name: icon }" />
 		</div>
 		<Input
@@ -9,7 +9,7 @@
 			v-model="model"
 			v-bind="{ placeholder, type: long ? 'textarea' : type }"
 			:class="inputClasses"
-			v-on="inputListeners($emit)"
+			v-on="inputListeners(emit)"
 		/>
 		<template
 			v-if="
@@ -122,7 +122,6 @@
 			default: null,
 		},
 	});
-
 	const emit = defineEmits(["focus", "blur", "update:modelValue"]);
 
 	const { getLocale } = UtilsComposable();

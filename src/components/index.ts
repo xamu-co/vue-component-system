@@ -1,3 +1,4 @@
+export { default as Wrapper } from "./Wrapper.vue";
 export { default as Img } from "./Img.vue";
 
 export { default as Icon } from "./icon/Icon.vue";
@@ -17,3 +18,9 @@ export { default as InputToggle } from "./input/InputToggle.vue";
 
 export { default as Select } from "./select/Select.vue";
 export { default as SelectFilter } from "./select/SelectFilter.vue";
+
+export { default as Loader } from "./Loader.vue";
+export { default as LoaderContent } from "./LoaderContent.vue";
+export { default as BoxMessage } from "./BoxMessage.vue";
+export { default as Modal } from "./Modal.vue";
+export { default as Dropdown } from "./Dropdown.vue";
