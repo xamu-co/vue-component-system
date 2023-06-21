@@ -1,0 +1,29 @@
+{
+  "name": "@open-xamu-co/components-types",
+  "version": "0.0.1",
+  "description": "Xamu shared component types",
+  "author": "@xamu-co",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xamu-co/components.git"
+  },
+  "keywords": [
+    "ts",
+    "js",
+    "types"
+  ],
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/xamu-co/shared/issues"
+  },
+  "homepage": "https://github.com/xamu-co/shared#readme",
+  "scripts": {
+    "build": "rimraf lib && tsc",
+    "prepare": "npm run build"
+  }
+}

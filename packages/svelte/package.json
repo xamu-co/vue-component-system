@@ -1,0 +1,59 @@
+{
+	"name": "@open-xamu-co/svelte-component-system",
+	"version": "0.0.1",
+	"description": "Svelte component system for the xamu project",
+	"main": "lib/index.mjs",
+	"exports": {
+		".": {
+			"node": {
+				"import": "./lib/index.mjs",
+				"require": "./lib/index.umd.js"
+			},
+			"default": "./lib/index.mjs"
+		},
+		"./package.json": "./package.json",
+		"./lib/style.css": {
+			"import": "./lib/style.css",
+			"require": "./lib/style.css"
+		}
+	},
+	"style": "lib/style.css",
+	"module": "lib/index.mjs",
+	"types": "lib/index.d.ts",
+	"files": [
+		"CHANGELOG.md",
+		"README.md",
+		"lib"
+	],
+	"scripts": {
+		"i": "yarn --frozen-lockfile",
+		"check:lint": "eslint --ext .ts,.svelte src",
+		"check:format": "prettier src/{*,**/*,**/**/*}.{ts,svelte} --check",
+		"build": "rimraf lib"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/xamu-co/components.git"
+	},
+	"keywords": [
+		"svelte",
+		"component",
+		"system"
+	],
+	"author": "@xamu-co",
+	"publishConfig": {
+		"access": "public"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/xamu-co/components/issues"
+	},
+	"homepage": "https://github.com/xamu-co/components/packages/svelte#readme",
+	"engines": {
+		"node": ">=16.19.0",
+		"yarn": ">=1.22.4"
+	},
+	"devDependencies": {
+		"@open-xamu-co/components-types": "*"
+	}
+}

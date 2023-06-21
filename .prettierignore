@@ -1,2 +1,5 @@
 lib
+packages/lib
+node_modules
+packages/node_modules
 CHANGELOG.md
