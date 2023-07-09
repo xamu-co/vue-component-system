@@ -5,6 +5,7 @@
 	"author": "@xamu-co",
 	"workspaces": [
 		"packages/types",
+		"packages/helpers",
 		"packages/svelte",
 		"packages/vue"
 	],
@@ -15,26 +16,24 @@
 		"lint:prettier": "prettier . --check --ignore-unknown",
 		"lint": "yarn lint:eslint && yarn lint:prettier",
 		"p:types": "yarn workspace @open-xamu-co/components-types",
+		"p:helpers": "yarn workspace @open-xamu-co/components-helpers",
 		"p:vue": "yarn workspace @open-xamu-co/vue-component-system",
 		"p:svelte": "yarn workspace @open-xamu-co/svelte-component-system",
 		"build": "yarn workspaces run build",
 		"release": "yarn workspaces run semantic-release",
-		"release:dry": "yarn workspaces run semantic-release --dry-run"
+		"release:dry": "yarn workspaces run semantic-release --dry-run",
+		"dev:svelte": "yarn p:svelte dev",
+		"dev:vue": "yarn p:vue dev"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^9.1.1",
 		"@commitlint/config-conventional": "^9.1.1",
-		"@fortawesome/fontawesome-common-types": "^6.4.0",
+		"@open-xamu-co/eslint-config": "https://gitpkg.now.sh/xamu-co/common/packages/eslint?dev",
 		"@semantic-release/changelog": "^5.0.1",
 		"@semantic-release/git": "^9.0.0",
-		"@types/lodash": "^4.14.192",
 		"@types/node": "^18.14.0",
-		"@types/uuid": "^9.0.1",
 		"@typescript-eslint/eslint-plugin": "^5.39.0",
 		"@typescript-eslint/parser": "^5.39.0",
-		"autoprefixer": "^9.8.6",
-		"cssnano": "^6.0.1",
-		"cssnano-preset-advanced": "^4.0.7",
 		"eslint": "^8.25.0",
 		"eslint-config-prettier": "^8.1.0",
 		"eslint-import-resolver-typescript": "^3.5.5",
@@ -42,33 +41,11 @@
 		"eslint-plugin-prettier": "^3.3.1",
 		"husky": "^4.2.5",
 		"lint-staged": "^10.2.11",
-		"postcss": "^8.2.10",
-		"postcss-cli": "^8.3.1",
-		"postcss-custom-properties": "^9.1.1",
-		"postcss-merge-selectors": "vis97c/postcss-merge-selectors",
-		"postcss-precision": "vis97c/postcss-precision",
-		"postcss-sort-media-queries": "^3.8.9",
 		"prettier": "^2.0.5",
 		"rimraf": "^3.0.2",
-		"sass": "1.32.10",
 		"semantic-release": "^17.1.1",
 		"semantic-release-monorepo": "^7.0.5",
-		"sort-css-media-queries": "vis97c/sort-css-media-queries",
-		"stylelint": "^15.6.1",
-		"stylelint-config-prettier": "^8.0.2",
-		"stylelint-prettier": "^1.1.2",
 		"typescript": "^5.0.4"
-	},
-	"dependencies": {
-		"interpolate-string": "^1.3.0",
-		"lodash": "^4.17.21",
-		"sweetalert2": "^11.7.5",
-		"uuid": "^9.0.0"
-	},
-	"peerDependencies": {
-		"@open-xamu-co/common-enums": "*",
-		"@open-xamu-co/common-helpers": "*",
-		"@open-xamu-co/common-types": "*"
 	},
 	"engines": {
 		"node": ">=16.19.0",
@@ -91,22 +68,10 @@
 		],
 		"*.vue": [
 			"prettier --write"
-		],
-		"*.css": [
-			"stylelint --fix",
-			"prettier --write"
-		],
-		"*.scss": [
-			"stylelint --syntax=scss --fix",
-			"prettier --write"
 		]
 	},
-	"stylelint": {
-		"extends": [
-			"stylelint-prettier/recommended"
-		],
-		"rules": {
-			"indentation": null
-		}
+	"dependencies": {
+		"svelte": "^4.0.5",
+		"vue": "^3.3.4"
 	}
 }

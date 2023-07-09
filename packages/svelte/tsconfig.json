@@ -1,12 +1,14 @@
 {
-    "extends": "../../tsconfig.root.json",
+    "extends": "./.svelte-kit/tsconfig.json",
     "compilerOptions": {
-        "baseUrl": ".",
-        "outDir": "./lib",
-        "rootDir": "src",
-    },
-    "include": [
-        "src/index.ts",
-        "src/*.d.ts",
-    ]
+        "allowJs": true,
+        "checkJs": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "moduleResolution": "node"
+    }
 }

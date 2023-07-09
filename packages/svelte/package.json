@@ -2,34 +2,18 @@
 	"name": "@open-xamu-co/svelte-component-system",
 	"version": "0.0.1",
 	"description": "Svelte component system for the xamu project",
-	"main": "lib/index.mjs",
-	"exports": {
-		".": {
-			"node": {
-				"import": "./lib/index.mjs",
-				"require": "./lib/index.umd.js"
-			},
-			"default": "./lib/index.mjs"
-		},
-		"./package.json": "./package.json",
-		"./lib/style.css": {
-			"import": "./lib/style.css",
-			"require": "./lib/style.css"
-		}
-	},
-	"style": "lib/style.css",
-	"module": "lib/index.mjs",
-	"types": "lib/index.d.ts",
-	"files": [
-		"CHANGELOG.md",
-		"README.md",
-		"lib"
-	],
 	"scripts": {
 		"i": "yarn --frozen-lockfile",
-		"check:lint": "eslint --ext .ts,.svelte src",
-		"check:format": "prettier src/{*,**/*,**/**/*}.{ts,svelte} --check",
-		"build": "rimraf lib"
+		"dev": "vite dev",
+		"build": "vite build && yarn package",
+		"preview": "vite preview",
+		"package": "svelte-kit sync && svelte-package && publint",
+		"prepublishOnly": "yarn package",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test": "vitest",
+		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"repository": {
 		"type": "git",
@@ -49,11 +33,76 @@
 		"url": "https://github.com/xamu-co/components/issues"
 	},
 	"homepage": "https://github.com/xamu-co/components/packages/svelte#readme",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
+		},
+		"./Wrapper.svelte": {
+			"types": "./dist/Wrapper.svelte.d.ts",
+			"svelte": "./dist/Wrapper.svelte"
+		},
+		"./Img.svelte": {
+			"types": "./dist/Img.svelte.d.ts",
+			"svelte": "./dist/Img.svelte"
+		},
+		"./Icon.svelte": {
+			"types": "./dist/icon/Icon.svelte.d.ts",
+			"svelte": "./dist/icon/Icon.svelte"
+		},
+		"./IconFa.svelte": {
+			"types": "./dist/icon/IconFa.svelte.d.ts",
+			"svelte": "./dist/icon/IconFa.svelte"
+		},
+		"./Loader.svelte": {
+			"types": "./dist/Loader.svelte.d.ts",
+			"svelte": "./dist/Loader.svelte"
+		}
+	},
+	"files": [
+		"CHANGELOG.md",
+		"README.md",
+		"dist",
+		"!dist/**/*.test.*",
+		"!dist/**/*.spec.*"
+	],
+	"types": "./dist/index.d.ts",
 	"engines": {
 		"node": ">=16.19.0",
 		"yarn": ">=1.22.4"
 	},
+	"dependencies": {
+		"@open-xamu-co/common-enums": "https://gitpkg.now.sh/xamu-co/common/packages/enums?dev",
+		"@open-xamu-co/common-helpers": "https://gitpkg.now.sh/xamu-co/common/packages/helpers?dev",
+		"uuid": "^9.0.0"
+	},
 	"devDependencies": {
-		"@open-xamu-co/components-types": "*"
-	}
+		"@fortawesome/fontawesome-common-types": "^6.4.0",
+		"@open-xamu-co/common-types": "https://gitpkg.now.sh/xamu-co/common/packages/types?dev",
+		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/kit": "^1.20.4",
+		"@sveltejs/package": "^2.0.0",
+		"@types/uuid": "^9.0.1",
+		"eslint-plugin-svelte": "^2.30.0",
+		"prettier-plugin-svelte": "^2.10.1",
+		"publint": "^0.1.9",
+		"svelte-check": "^3.4.3",
+		"svelte-preprocess": "^5.0.4",
+		"tslib": "^2.4.1",
+		"vite-plugin-svelte": "^3.0.1",
+		"vite": "^4.4.2",
+		"vitest": "^0.32.2"
+	},
+	"optionalDependencies": {
+		"@open-xamu-co/style-system": "https://gitpkg.now.sh/xamu-co/style-system?dev"
+	},
+	"peerDependencies": {
+		"svelte": "^4.0.0"
+	},
+	"bundledDependencies": [
+		"@open-xamu-co/components-helpers",
+		"@open-xamu-co/components-types"
+	]
 }

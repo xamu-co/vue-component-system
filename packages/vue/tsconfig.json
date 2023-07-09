@@ -1,13 +1,46 @@
 {
-    "extends": "../../tsconfig.root.json",
     "compilerOptions": {
+        // "composite": true,
         "baseUrl": ".",
-        "outDir": "./lib",
-        "rootDir": "src",
+        "outDir": "./dist",
+        "rootDir": "src/lib",
+        /* Compilation */
+        "module": "ESNext",
+        "target": "ES2020",
+        "esModuleInterop": true,
+        "allowJs": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "lib": [
+            "ESNext",
+            "ESNext.AsyncIterable",
+            "DOM"
+        ],
+        "typeRoots": [
+            "node_modules/@types",
+        ],
+        /* Bundler mode */
+        "moduleResolution": "bundler",
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "jsx": "preserve",
+        /* Linting */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "allowSyntheticDefaultImports": true,
+        "useDefineForClassFields": true,
+        "forceConsistentCasingInFileNames": true,
     },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ],
     "include": [
-        "src/index.ts",
-        "src/*.d.ts",
+        "src/lib/*.ts",
+        "src/lib/*.vue",
+        "src/lib/**/*.vue",
     ],
     "references": [
         {

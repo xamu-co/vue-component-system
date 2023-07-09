@@ -1,0 +1,12 @@
+{
+	"parserOptions": {
+		"requireConfigFile": false,
+		"sourceType": "module"
+	},
+	"env": {
+		"node": true
+	},
+	"extends": [
+		"@open-xamu-co/eslint-config"
+	]
+}

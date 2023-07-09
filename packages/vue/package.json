@@ -2,35 +2,12 @@
 	"name": "@open-xamu-co/vue-component-system",
 	"version": "0.0.1",
 	"description": "Vue component system for the xamu project",
-	"main": "lib/index.mjs",
-	"exports": {
-		".": {
-			"node": {
-				"import": "./lib/index.mjs",
-				"require": "./lib/index.umd.js"
-			},
-			"default": "./lib/index.mjs"
-		},
-		"./package.json": "./package.json",
-		"./lib/style.css": {
-			"import": "./lib/style.css",
-			"require": "./lib/style.css"
-		}
-	},
-	"style": "lib/style.css",
-	"module": "lib/index.mjs",
-	"types": "lib/index.d.ts",
-	"files": [
-		"CHANGELOG.md",
-		"README.md",
-		"lib"
-	],
 	"scripts": {
 		"i": "yarn --frozen-lockfile",
 		"check:lint": "eslint --ext .ts,.vue src",
-		"check:format": "prettier src/{*,**/*,**/**/*}.{ts,vue} --check",
-		"build": "rimraf lib && vite build && vue-tsc",
-		"prepare": "npm run build"
+		"check:format": "prettier {lib,src}/{*,**/*,**/**/*}.{ts,vue} --check",
+		"build": "rimraf dist && vite build && vue-tsc",
+		"dev": "vite dev"
 	},
 	"repository": {
 		"type": "git",
@@ -50,17 +27,128 @@
 		"url": "https://github.com/xamu-co/components/issues"
 	},
 	"homepage": "https://github.com/xamu-co/components/packages/vue#readme",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
+		},
+		"./Wrapper.vue": {
+			"types": "./dist/Wrapper.vue.d.ts",
+			"import": "./dist/Wrapper.vue.js"
+		},
+		"./Img.vue": {
+			"types": "./dist/Img.vue.d.ts",
+			"import": "./dist/Img.vue.js"
+		},
+		"./Icon.vue": {
+			"types": "./dist/icon/Icon.vue.d.ts",
+			"import": "./dist/icon/Icon.vue.js"
+		},
+		"./IconFa.vue": {
+			"types": "./dist/icon/IconFa.vue.d.ts",
+			"import": "./dist/icon/IconFa.vue.js"
+		},
+		"./Action.vue": {
+			"types": "./dist/action/Action.vue.d.ts",
+			"import": "./dist/action/Action.vue.js"
+		},
+		"./ActionButton.vue": {
+			"types": "./dist/action/ActionButton.vue.d.ts",
+			"import": "./dist/action/ActionButton.vue.js"
+		},
+		"./ActionButtonLink.vue": {
+			"types": "./dist/action/ActionButtonLink.vue.d.ts",
+			"import": "./dist/action/ActionButtonLink.vue.js"
+		},
+		"./ActionButtonToggle.vue": {
+			"types": "./dist/action/ActionButtonToggle.vue.d.ts",
+			"import": "./dist/action/ActionButtonToggle.vue.js"
+		},
+		"./ActionLink.vue": {
+			"types": "./dist/action/ActionLink.vue.d.ts",
+			"import": "./dist/action/ActionLink.vue.js"
+		},
+		"./ActionLinkBox.vue": {
+			"types": "./dist/action/ActionLinkBox.vue.d.ts",
+			"import": "./dist/action/ActionLinkBox.vue.js"
+		},
+		"./Input.vue": {
+			"types": "./dist/input/Input.vue.d.ts",
+			"import": "./dist/input/Input.vue.js"
+		},
+		"./InputFile.vue": {
+			"types": "./dist/input/InputFile.vue.d.ts",
+			"import": "./dist/input/InputFile.vue.js"
+		},
+		"./InputText.vue": {
+			"types": "./dist/input/InputText.vue.d.ts",
+			"import": "./dist/input/InputText.vue.js"
+		},
+		"./InputToggle.vue": {
+			"types": "./dist/input/InputToggle.vue.d.ts",
+			"import": "./dist/input/InputToggle.vue.js"
+		},
+		"./Select.vue": {
+			"types": "./dist/select/Select.vue.d.ts",
+			"import": "./dist/select/Select.vue.js"
+		},
+		"./SelectFilter.vue": {
+			"types": "./dist/select/SelectFilter.vue.d.ts",
+			"import": "./dist/select/SelectFilter.vue.js"
+		},
+		"./Loader.vue": {
+			"types": "./dist/Loader.vue.d.ts",
+			"import": "./dist/Loader.vue.js"
+		},
+		"./LoaderContent.vue": {
+			"types": "./dist/LoaderContent.vue.d.ts",
+			"import": "./dist/LoaderContent.vue.js"
+		},
+		"./BoxMessage.vue": {
+			"types": "./dist/BoxMessage.vue.d.ts",
+			"import": "./dist/BoxMessage.vue.js"
+		},
+		"./Modal.vue": {
+			"types": "./dist/Modal.vue.d.ts",
+			"import": "./dist/Modal.vue.js"
+		},
+		"./Dropdown.vue": {
+			"types": "./dist/Dropdown.vue.d.ts",
+			"import": "./dist/Dropdown.vue.js"
+		}
+	},
+	"types": "dist/index.d.ts",
+	"files": [
+		"CHANGELOG.md",
+		"README.md",
+		"dist"
+	],
+	"dependencies": {
+		"@open-xamu-co/common-enums": "https://gitpkg.now.sh/xamu-co/common/packages/enums?dev",
+		"@open-xamu-co/common-helpers": "https://gitpkg.now.sh/xamu-co/common/packages/helpers?dev",
+		"uuid": "^9.0.0"
+	},
 	"devDependencies": {
+		"@fortawesome/fontawesome-common-types": "^6.4.0",
+		"@open-xamu-co/common-types": "https://gitpkg.now.sh/xamu-co/common/packages/types?dev",
+		"@types/uuid": "^9.0.1",
 		"@vitejs/plugin-vue": "^4.2.1",
-		"@open-xamu-co/components-types": "*",
 		"eslint-plugin-vue": "^9.12.0",
-		"vite": "^4.3.5",
-		"vue": "^3.2.47",
-		"vue-tsc": "^1.6.4"
+		"vue-tsc": "^1.6.4",
+		"vite": "^4.4.2"
+	},
+	"optionalDependencies": {
+		"@open-xamu-co/style-system": "https://gitpkg.now.sh/xamu-co/style-system?dev"
 	},
 	"peerDependencies": {
 		"vue": "^3.2.47"
 	},
+	"bundledDependencies": [
+		"@open-xamu-co/components-helpers",
+		"@open-xamu-co/components-types"
+	],
 	"engines": {
 		"node": ">=16.19.0",
 		"yarn": ">=1.22.4"

@@ -1,5 +1,4 @@
-lib
-packages/lib
+packages/**/dist
 node_modules
-packages/node_modules
-CHANGELOG.md
+packages/**/node_modules
+packages/**/CHANGELOG.md

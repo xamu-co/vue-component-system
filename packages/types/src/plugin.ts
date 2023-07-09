@@ -1,9 +1,9 @@
-import type { Component, DefineComponent } from "vue";
-
-// import type * as components from "../components";
 import { tPluginLocale } from "./locale";
 
-export interface iPluginOptions<K extends string = string> {
+export interface iPluginOptions<
+	ComponentKeys extends string = string,
+	ComponentType extends any = any
+> {
 	/**
 	 * Use web components instead of vue components
 	 */
@@ -13,7 +13,7 @@ export interface iPluginOptions<K extends string = string> {
 	 *
 	 * @default true
 	 */
-	globalComponents?: boolean | K[];
+	globalComponents?: boolean | ComponentKeys[];
 	/**
 	 * Components prefix
 	 *
@@ -25,12 +25,12 @@ export interface iPluginOptions<K extends string = string> {
 	 * Router component
 	 * If a router like "vue-router" is used this component is required for buttons to work
 	 */
-	routerComponent?: Component<any> | DefineComponent<any>;
+	routerComponent?: ComponentType;
 	/**
 	 * Image component
 	 * Optional image optimization component
 	 */
-	imageComponent?: Component<any> | DefineComponent<any>;
+	imageComponent?: ComponentType;
 	/**
 	 * Global locale values
 	 */
